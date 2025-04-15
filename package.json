@@ -9,25 +9,26 @@
   },
   "scripts": {
     "build": "tsc --noEmit && vite build",
+    "build:check": "tsc --noEmit && vite build --mode development",
     "build:firefox": "tsc --noEmit && cross-env __FIREFOX__=true vite build",
     "build:watch": "cross-env __DEV__=true vite build -w --mode development",
     "build:firefox:watch": "cross-env __DEV__=true __FIREFOX__=true vite build -w --mode development",
     "build:hmr": "rollup --config utils/reload/rollup.config.mjs",
     "wss": "node utils/reload/initReloadServer.js",
-    "dev": "pnpm build:hmr && (run-p wss build:watch)",
-    "dev:firefox": "pnpm build:hmr && (run-p wss build:firefox:watch)",
+    "dev": "yarn build:hmr && (run-p wss build:watch)",
+    "dev:firefox": "yarn build:hmr && (run-p wss build:firefox:watch)",
     "test": "vitest",
     "commitlint": "commitlint --edit",
     "lint": "eslint src --ext .ts,.js,.tsx,.jsx",
-    "lint:fix": "pnpm lint --fix",
+    "lint:fix": "yarn lint --fix",
     "prettier": "prettier . --write",
     "prepare": "husky install"
   },
   "type": "module",
   "dependencies": {
     "construct-style-sheets-polyfill": "3.1.0",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "webextension-polyfill": "0.10.0"
   },
   "devDependencies": {
@@ -38,8 +39,8 @@
     "@testing-library/react": "14.0.0",
     "@types/chrome": "0.0.263",
     "@types/node": "20.8.10",
-    "@types/react": "18.2.37",
-    "@types/react-dom": "18.2.18",
+    "@types/react": "^19.1.1",
+    "@types/react-dom": "^19.1.2",
     "@types/ws": "8.5.8",
     "@typescript-eslint/eslint-plugin": "6.10.0",
     "@typescript-eslint/parser": "6.18.1",
@@ -76,5 +77,5 @@
       "eslint --fix"
     ]
   },
-  "packageManager": "pnpm@8.9.2"
+  "packageManager": "yarn@4.9.1+sha512.f95ce356460e05be48d66401c1ae64ef84d163dd689964962c6888a9810865e39097a5e9de748876c2e0bf89b232d583c33982773e9903ae7a76257270986538"
 }

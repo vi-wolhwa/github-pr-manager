@@ -18,6 +18,7 @@ export default defineConfig({
       '@src': srcDir,
       '@assets': resolve(srcDir, 'assets'),
       '@pages': pagesDir,
+      '@shared': resolve(srcDir, 'shared'),
     },
   },
   plugins: [...getPlugins(isDev), react()],

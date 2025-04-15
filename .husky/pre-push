@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔁 Checking circular dependencies..."
+yarn check-circular
+
+echo "🧪 Running tests..."
+yarn test
+
+echo "⚙️ Checking build (fast mode)..."
+yarn build:check

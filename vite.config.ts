@@ -41,7 +41,6 @@ export default defineConfig({
         background: resolve(pagesDir, 'background', 'index.ts'),
         contentStyle: resolve(pagesDir, 'content', 'style.scss'),
         popup: resolve(pagesDir, 'popup', 'index.html'),
-        sidepanel: resolve(pagesDir, 'sidepanel', 'index.html'),
       },
       output: {
         entryFileNames: 'src/pages/[name]/index.js',

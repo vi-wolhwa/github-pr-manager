@@ -16,10 +16,7 @@ const manifest = {
   version: packageJson.version,
   description: '__MSG_extensionDescription__',
   host_permissions: ['<all_urls>'],
-  permissions: ['storage', 'sidePanel', 'scripting'],
-  side_panel: {
-    default_path: 'src/pages/sidepanel/index.html',
-  },
+  permissions: ['storage', 'scripting'],
   background: {
     service_worker: 'src/pages/background/index.js',
     type: 'module',

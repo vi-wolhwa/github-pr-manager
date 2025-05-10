@@ -2384,6 +2384,7 @@ __metadata:
     "@typescript-eslint/parser": 6.18.1
     "@vitejs/plugin-react": 4.2.0
     chokidar: 3.5.3
+    classnames: ^2.5.1
     construct-style-sheets-polyfill: 3.1.0
     cross-env: 7.0.3
     eslint: 8.56.0
@@ -2420,6 +2421,13 @@ __metadata:
     ws: 8.14.2
   languageName: unknown
   linkType: soft
+
+"classnames@npm:^2.5.1":
+  version: 2.5.1
+  resolution: "classnames@npm:2.5.1"
+  checksum: da424a8a6f3a96a2e87d01a432ba19315503294ac7e025f9fece656db6b6a0f7b5003bb1fbb51cbb0d9624d964f1b9bb35a51c73af9b2434c7b292c42231c1e5
+  languageName: node
+  linkType: hard
 
 "cli-cursor@npm:^5.0.0":
   version: 5.0.0

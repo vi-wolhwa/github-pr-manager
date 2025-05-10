@@ -40,7 +40,6 @@ const manifest = {
       js: ['src/pages/contentUI/index.js'],
     },
   ],
-  devtools_page: 'src/pages/devtools/index.html',
   web_accessible_resources: [
     {
       resources: ['assets/js/*.js', 'assets/css/*.css', 'icon-128.png', 'icon-34.png'],

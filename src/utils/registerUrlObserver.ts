@@ -1,7 +1,10 @@
 /** debounce */
-export const debounce = (fn, delay = 300) => {
-  let timeout;
-  return (...args) => {
+export const debounce = <Args extends unknown[], Return>(
+  fn: (...args: Args) => Return,
+  delay = 300,
+): ((...args: Args) => void) => {
+  let timeout: NodeJS.Timeout;
+  return (...args: Args): void => {
     clearTimeout(timeout);
     timeout = setTimeout(() => fn(...args), delay);
   };

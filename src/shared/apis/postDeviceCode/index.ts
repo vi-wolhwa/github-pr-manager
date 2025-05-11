@@ -1,4 +1,4 @@
-import { GITHUB } from '@root/src/constants/apiURL';
+import { GITHUB_URL } from '@root/src/constants/apiURL';
 import { GITHUB_CLIENT_ID } from '@root/src/constants/clientId';
 
 /** post device code 응답 값 */
@@ -17,7 +17,7 @@ export type ResponsePostDeviceCode = {
 
 /** 앱에 유저 등록을 위한 요청 */
 export const postDeviceCode = async (): Promise<ResponsePostDeviceCode> => {
-  const res = await fetch(GITHUB['CODE'], {
+  const res = await fetch(GITHUB_URL.CODE, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',

@@ -2,8 +2,9 @@ import withSuspense from '@src/shared/hoc/withSuspense';
 import withErrorBoundary from '@src/shared/hoc/withErrorBoundary';
 import styles from './Popup.module.scss';
 import classNames from 'classnames/bind';
-import { postDeviceCode } from '@root/src/shared/apis/postDeviceCode';
+import { ResponsePostDeviceCode, postDeviceCode } from '@root/src/shared/apis/postDeviceCode';
 import { sendPollingForTokenMessage } from '@root/src/utils/sendPollingForTokenMessage';
+import { useState } from 'react';
 
 const cx = classNames.bind(styles);
 
@@ -11,15 +12,38 @@ const cx = classNames.bind(styles);
  * 익스텐션 아이콘 클릭 시 첫 등장하는 화면
  */
 const Popup = () => {
+  const [deviceInfo, setDeviceInfo] = useState<ResponsePostDeviceCode>();
+  const [showRegisterPage, setShowRegisterPage] = useState(false);
+
   const onClickRegisterButton = async () => {
-    const deviceCodeInfo = await postDeviceCode();
-    const { device_code, interval } = deviceCodeInfo;
+    const deviceInfoData = await postDeviceCode();
+    const { device_code, interval } = deviceInfoData;
+
+    setDeviceInfo(deviceInfoData);
     sendPollingForTokenMessage({ type: 'POLLING_FOR_TOKEN', device_code, interval });
+  };
+
+  const onClickCopyButton = async () => {
+    const { user_code } = deviceInfo;
+    await navigator.clipboard.writeText(user_code);
+    setShowRegisterPage(true);
+  };
+
+  const onClickMoveRegisterPage = () => {
+    const { verification_uri } = deviceInfo;
+    window.open(verification_uri, '_blank');
   };
 
   return (
     <div className={cx('wrap')}>
       <button onClick={onClickRegisterButton}>깃허브 등록하기</button>
+      {deviceInfo && (
+        <div>
+          <code>{deviceInfo.user_code}</code>
+          <button onClick={onClickCopyButton}>COPY</button>
+        </div>
+      )}
+      {showRegisterPage && <button onClick={onClickMoveRegisterPage}>등록 페이지로 이동</button>}
     </div>
   );
 };

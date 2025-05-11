@@ -1,3 +1,4 @@
+import { GITHUB_API_URL, GITHUB_URL } from '../constants/apiURL';
 import { GITHUB_CLIENT_ID } from '../constants/clientId';
 import { ResponsePostDeviceCode } from '../shared/apis/postDeviceCode';
 
@@ -9,7 +10,7 @@ type PollingForTokenParams = {
 /** 백그라운드에서 토큰 유무를 폴링으로 확인 */
 export const pollingForToken = async ({ device_code, interval }: PollingForTokenParams) => {
   try {
-    const res = await fetch('https://github.com/login/oauth/access_token', {
+    const res = await fetch(GITHUB_URL.ACCESS_TOKEN, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -23,13 +24,12 @@ export const pollingForToken = async ({ device_code, interval }: PollingForToken
     });
 
     const data = await res.json();
-    console.log('data', data);
 
     if (data.access_token) {
       console.log('✅ Access token 받음:', data.access_token);
       chrome.storage.local.set({ githubToken: data.access_token });
 
-      const userRes = await fetch('https://api.github.com/user', {
+      const userRes = await fetch(GITHUB_API_URL.USER, {
         headers: {
           Authorization: `Bearer ${data.access_token}`,
         },

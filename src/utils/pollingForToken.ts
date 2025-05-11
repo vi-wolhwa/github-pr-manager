@@ -1,6 +1,7 @@
 import { getUserInfo } from '../shared/apis/getUserInfo';
 import { ResponsePostDeviceCode } from '../shared/apis/postDeviceCode';
 import { isFailPostToken, isSuccessPostToken, postToken } from '../shared/apis/postToken';
+import userStorage from '../shared/storages/userStorage';
 
 type PollingForTokenParams = {
   device_code: ResponsePostDeviceCode['device_code'];
@@ -17,9 +18,8 @@ export const pollingForToken = async ({ device_code, interval }: PollingForToken
 
       const user = await getUserInfo({ access_token });
 
-      /** 익스텐션 로컬스토리지에 access_token 저장 */
-      chrome.storage.local.set({ github_access_token: access_token });
-      chrome.storage.local.set({ user: { id: user.login } });
+      /** 익스텐션 로컬스토리지에 access_token, id 저장 */
+      userStorage.set({ id: user.login, access_token });
       return;
     }
 

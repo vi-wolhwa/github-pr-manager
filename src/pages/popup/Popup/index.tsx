@@ -17,7 +17,7 @@ const Popup = () => {
   const [deviceInfo, setDeviceInfo] = useState<ResponsePostDeviceCode>();
   const [showRegisterPage, setShowRegisterPage] = useState(false);
 
-  const { id } = useStorage(userStorage);
+  const { id, access_token } = useStorage(userStorage);
 
   const onClickRegisterButton = async () => {
     const deviceInfoData = await postDeviceCode();
@@ -49,6 +49,7 @@ const Popup = () => {
       )}
       {showRegisterPage && <button onClick={onClickMoveRegisterPage}>등록 페이지로 이동</button>}
       {id && id}
+      {access_token && access_token}
     </div>
   );
 };

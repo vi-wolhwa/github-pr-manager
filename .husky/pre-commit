@@ -2,4 +2,4 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 echo "🧼 Running lint-staged (prettier + eslint)..."
-yarn dlx lint-staged
+yarn lint-staged

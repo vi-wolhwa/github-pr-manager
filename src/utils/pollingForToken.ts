@@ -19,7 +19,7 @@ export const pollingForToken = async ({ device_code, interval }: PollingForToken
 
       /** 익스텐션 로컬스토리지에 access_token 저장 */
       chrome.storage.local.set({ github_access_token: access_token });
-      chrome.storage.local.set({ user_id: user.login });
+      chrome.storage.local.set({ user: { id: user.login } });
       return;
     }
 

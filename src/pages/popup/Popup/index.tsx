@@ -5,6 +5,8 @@ import classNames from 'classnames/bind';
 import { ResponsePostDeviceCode, postDeviceCode } from '@root/src/shared/apis/postDeviceCode';
 import { sendPollingForTokenMessage } from '@root/src/utils/sendPollingForTokenMessage';
 import { useState } from 'react';
+import useStorage from '@root/src/shared/hooks/useStorage';
+import userStorage from '@root/src/shared/storages/userStorage';
 
 const cx = classNames.bind(styles);
 
@@ -14,6 +16,8 @@ const cx = classNames.bind(styles);
 const Popup = () => {
   const [deviceInfo, setDeviceInfo] = useState<ResponsePostDeviceCode>();
   const [showRegisterPage, setShowRegisterPage] = useState(false);
+
+  const { id } = useStorage(userStorage);
 
   const onClickRegisterButton = async () => {
     const deviceInfoData = await postDeviceCode();
@@ -44,6 +48,7 @@ const Popup = () => {
         </div>
       )}
       {showRegisterPage && <button onClick={onClickMoveRegisterPage}>등록 페이지로 이동</button>}
+      {id && id}
     </div>
   );
 };

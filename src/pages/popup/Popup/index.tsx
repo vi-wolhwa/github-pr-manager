@@ -3,6 +3,7 @@ import withErrorBoundary from '@src/shared/hoc/withErrorBoundary';
 import styles from './Popup.module.scss';
 import classNames from 'classnames/bind';
 import { postDeviceCode } from '@root/src/shared/apis/postDeviceCode';
+import { sendPollingForTokenMessage } from '@root/src/utils/sendPollingForTokenMessage';
 
 const cx = classNames.bind(styles);
 
@@ -11,8 +12,9 @@ const cx = classNames.bind(styles);
  */
 const Popup = () => {
   const onClickRegisterButton = async () => {
-    const data = await postDeviceCode();
-    console.log('data', data);
+    const deviceCodeInfo = await postDeviceCode();
+    const { device_code, interval } = deviceCodeInfo;
+    sendPollingForTokenMessage({ type: 'POLLING_FOR_TOKEN', device_code, interval });
   };
 
   return (

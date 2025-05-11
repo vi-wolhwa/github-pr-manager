@@ -2,7 +2,7 @@ import { GITHUB } from '@root/src/constants/apiURL';
 import { GITHUB_CLIENT_ID } from '@root/src/constants/clientId';
 
 /** post device code 응답 값 */
-type ResponsePostDeviceCode = {
+export type ResponsePostDeviceCode = {
   /** 기기 코드 */
   device_code: string;
   /** 유저 인증 코드 */

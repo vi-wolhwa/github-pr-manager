@@ -7,6 +7,8 @@ import { sendPollingForTokenMessage } from '@root/src/utils/sendPollingForTokenM
 import { useState } from 'react';
 import useStorage from '@root/src/shared/hooks/useStorage';
 import userStorage from '@root/src/shared/storages/userStorage';
+import Button from './components/Button';
+import UserCode from './components/UserCode';
 
 const cx = classNames.bind(styles);
 
@@ -16,7 +18,6 @@ const cx = classNames.bind(styles);
 const Popup = () => {
   const [deviceInfo, setDeviceInfo] = useState<ResponsePostDeviceCode>();
   const [showRegisterPage, setShowRegisterPage] = useState(false);
-
   const { id } = useStorage(userStorage);
 
   const onClickRegisterButton = async () => {
@@ -40,15 +41,36 @@ const Popup = () => {
 
   return (
     <div className={cx('wrap')}>
-      <button onClick={onClickRegisterButton}>깃허브 등록하기</button>
-      {deviceInfo && (
+      {/* 로그인 전 */}
+      {!id && (
+        <>
+          {/* 등록 전 */}
+          {!deviceInfo && (
+            <div>
+              <Button onClick={onClickRegisterButton}>깃허브 등록하기</Button>
+            </div>
+          )}
+          {/* 등록 위한 코드 보여주는 단계 */}
+          {deviceInfo && (
+            <div>
+              <UserCode onClick={onClickCopyButton} userCode={deviceInfo.user_code} />
+              {showRegisterPage && <p>복사가 완료되었습니다.</p>}
+            </div>
+          )}
+          {/* 등록 페이지로 이동 위한  단계 */}
+          {showRegisterPage && (
+            <div>
+              <Button onClick={onClickMoveRegisterPage}>등록 페이지로 이동</Button>
+            </div>
+          )}
+        </>
+      )}
+      {/* 로그인 이후 */}
+      {id && (
         <div>
-          <code>{deviceInfo.user_code}</code>
-          <button onClick={onClickCopyButton}>COPY</button>
+          <p>{`안녕하세요. ${id}님`}</p>
         </div>
       )}
-      {showRegisterPage && <button onClick={onClickMoveRegisterPage}>등록 페이지로 이동</button>}
-      {id && id}
     </div>
   );
 };

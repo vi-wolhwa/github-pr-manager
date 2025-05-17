@@ -15,13 +15,14 @@ export const debounce = <Args extends unknown[], Return>(
  * NOTE: debounce 사용 이유 -> debounce를 사용하지 않으면 URL변경 감지 이벤트가 한 번에 너무 많이실행됨
  * NOTE: 페이지 변경 되고, 특정 페이지에 ui 삽입 또는 이벤트 트리거 시 사용
  */
-export const registerUrlObserver = async () => {
+export const registerUrlObserver = (onUrlChange: () => void) => {
   let lastPath = location.href;
   const observer = new MutationObserver(
     debounce(() => {
       if (location.pathname !== lastPath) {
         console.log('🔁 URL 변경 감지 (MutationObserver):', location.href);
         lastPath = location.href;
+        onUrlChange();
       }
     }),
   );

@@ -25,19 +25,14 @@ export default defineConfig({
   publicDir: resolve(rootDir, 'public'),
   build: {
     outDir: resolve(rootDir, 'dist'),
-    /** Can slow down build speed. */
-    // sourcemap: isDev,
     minify: isProduction,
     modulePreload: false,
     reportCompressedSize: isProduction,
     emptyOutDir: !isDev,
     rollupOptions: {
       input: {
-        contentRuntime: resolve(pagesDir, 'content', 'runtime', 'index.ts'),
-        contentInjected: resolve(pagesDir, 'content', 'injected', 'index.ts'),
-        contentUI: resolve(pagesDir, 'content', 'ui', 'index.ts'),
+        content: resolve(pagesDir, 'content', 'index.ts'),
         background: resolve(pagesDir, 'background', 'index.ts'),
-        contentStyle: resolve(pagesDir, 'content', 'style.scss'),
         popup: resolve(pagesDir, 'popup', 'index.html'),
       },
       output: {

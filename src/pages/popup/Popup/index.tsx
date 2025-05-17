@@ -18,7 +18,7 @@ const cx = classNames.bind(styles);
 const Popup = () => {
   const [deviceInfo, setDeviceInfo] = useState<ResponsePostDeviceCode>();
   const [showRegisterPage, setShowRegisterPage] = useState(false);
-  const { id } = useStorage(userStorage);
+  const { id: userId } = useStorage(userStorage);
 
   const onClickRegisterButton = async () => {
     const deviceInfoData = await postDeviceCode();
@@ -42,7 +42,7 @@ const Popup = () => {
   return (
     <div className={cx('wrap')}>
       {/* 로그인 전 */}
-      {!id && (
+      {!userId && (
         <>
           {/* 등록 전 */}
           {!deviceInfo && (
@@ -66,9 +66,9 @@ const Popup = () => {
         </>
       )}
       {/* 로그인 이후 */}
-      {id && (
+      {userId && (
         <div>
-          <p>{`안녕하세요. ${id}님`}</p>
+          <p>{`안녕하세요. ${userId}님`}</p>
         </div>
       )}
     </div>

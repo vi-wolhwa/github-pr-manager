@@ -26,13 +26,7 @@ type Params = {
  * DOM에서 target 요소를 삭제하거나, 리액트 컴포넌트를 삽입하는 함수
  */
 const updateDom = ({ action, targetSelector, component, timeoutMs = 1000, onBefore }: Params) => {
-  let done = false;
-
   const observer = new MutationObserver(() => {
-    if (done) {
-      return;
-    }
-
     const target = document.querySelector(targetSelector);
     if (!target) {
       return;
@@ -98,14 +92,10 @@ const updateDom = ({ action, targetSelector, component, timeoutMs = 1000, onBefo
         break;
       }
     }
-    done = true;
-    if (observer) {
-      observer.disconnect();
-    }
+    observer.disconnect();
   });
 
   observer.observe(document.body, { childList: true, subtree: true });
-
   setTimeout(() => observer.disconnect(), timeoutMs);
 };
 

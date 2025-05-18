@@ -33,6 +33,7 @@ const manifest = {
       matches: ['http://*/*', 'https://*/*', '<all_urls>'],
       js: ['src/pages/content/index.js'],
       // KEY for cache invalidation
+      run_at: 'document_start',
     },
   ],
   web_accessible_resources: [

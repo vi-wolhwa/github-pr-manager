@@ -23,79 +23,75 @@ type Params = {
 };
 
 /**
- * DOM에서 target 요소를 삭제하거나, 리액트 컴포넌트를 삽입하는 함수
+ * targetSelector 로 찾은 DOM 노드에 React 컴포넌트를 삽입·교체하거나, DOM 노드를 제거한다.
  */
 const updateDom = ({ action, targetSelector, component, timeoutMs = 1000, onBefore }: Params) => {
-  const observer = new MutationObserver(() => {
+  /**
+   * 공통: mount div를 만들고 컴포넌트를 렌더링하는 함수
+   */
+  const mount = (parent: Element, refNode?: ChildNode | null) => {
+    const mountDiv = document.createElement('div');
+    parent.insertBefore(mountDiv, refNode ?? null);
+    if (component) {
+      createRoot(mountDiv).render(component);
+    }
+  };
+
+  /**
+   * 실제 DOM을 조작하는 함수
+   */
+  const mutate = (observer: MutationObserver) => {
     const target = document.querySelector(targetSelector);
+
+    /* 대상 요소가 없다면 대기 */
     if (!target) {
       return;
     }
 
     onBefore?.(target);
 
-    let mountDiv: HTMLDivElement | null = null;
-
     switch (action) {
-      case 'replace': {
-        if (!target.parentElement) {
-          return;
-        }
-        mountDiv = document.createElement('div');
-        target.parentElement.insertBefore(mountDiv, target.nextSibling);
-        target.remove();
-        if (component) {
-          createRoot(mountDiv).render(component);
+      case 'replace':
+        if (target.parentElement) {
+          mount(target.parentElement, target.nextSibling);
+          target.remove();
         }
         break;
-      }
-      case 'insertBefore': {
-        if (!target.parentElement) {
-          return;
-        }
-        mountDiv = document.createElement('div');
-        target.parentElement.insertBefore(mountDiv, target);
-        if (component) {
-          createRoot(mountDiv).render(component);
-        }
-        break;
-      }
-      case 'insertAfter': {
-        if (!target.parentElement) {
-          return;
-        }
-        mountDiv = document.createElement('div');
-        target.parentElement.insertBefore(mountDiv, target.nextSibling);
-        if (component) {
-          createRoot(mountDiv).render(component);
-        }
-        break;
-      }
-      case 'append': {
-        mountDiv = document.createElement('div');
-        target.appendChild(mountDiv);
-        if (component) {
-          createRoot(mountDiv).render(component);
-        }
-        break;
-      }
-      case 'prepend': {
-        mountDiv = document.createElement('div');
-        target.prepend(mountDiv);
-        if (component) {
-          createRoot(mountDiv).render(component);
-        }
-        break;
-      }
-      case 'remove': {
-        target.remove();
-        break;
-      }
-    }
-    observer.disconnect();
-  });
 
+      case 'insertBefore':
+        if (target.parentElement) {
+          mount(target.parentElement, target);
+        }
+        break;
+
+      case 'insertAfter':
+        if (target.parentElement) {
+          mount(target.parentElement, target.nextSibling);
+        }
+        break;
+
+      case 'append':
+        mount(target);
+        break;
+
+      case 'prepend':
+        mount(target, target.firstChild);
+        break;
+
+      case 'remove':
+        target.remove();
+        break;
+    }
+
+    /* 작업 완료 후, 감시 중단 */
+    observer.disconnect();
+  };
+
+  /* DOM 변화 감시: SPA · 지연 렌더 대응 */
+  const observer = new MutationObserver(() => mutate(observer));
   observer.observe(document.body, { childList: true, subtree: true });
+
+  /* 최대 timeoutMs 후 감시 강제 종료(메모리 보호) */
   setTimeout(() => observer.disconnect(), timeoutMs);
 };
 

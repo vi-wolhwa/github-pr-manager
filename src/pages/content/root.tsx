@@ -1,3 +1,4 @@
+import runPREditorPreviewScript from './pr-editor-preview';
 import runSampleNaverScript from './sampleNaver';
 
 /**
@@ -5,6 +6,9 @@ import runSampleNaverScript from './sampleNaver';
  * - NOTE: 실행할 스크립트를 함수 내부에서 호출하세요.
  */
 const runContentScripts = () => {
+  runPREditorPreviewScript();
+
+  /* 샘플 스크립트 */
   runSampleNaverScript();
 };
 

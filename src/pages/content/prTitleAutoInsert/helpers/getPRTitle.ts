@@ -42,5 +42,5 @@ export const getPRTitle = async ({ base, compare }: PRBranches) => {
     return prTitle;
   }
 
-  return 'zzz';
+  return '';
 };

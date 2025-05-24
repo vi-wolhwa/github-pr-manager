@@ -5,7 +5,7 @@ export type PRBranches = {
 };
 
 /**
- * 브랜치 이름을 가져오는 함수
+ * PR의 base, compare 브랜치 이름을 가져오는 함수
  */
 export const getBranchName = (): PRBranches => {
   const branchNames = document.querySelectorAll(SELECTOR.branchName);

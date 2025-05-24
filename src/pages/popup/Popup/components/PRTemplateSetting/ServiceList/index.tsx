@@ -1,4 +1,4 @@
-import { Service } from '../types';
+import { Service } from '@root/src/shared/storages/serviceListStorage';
 import styles from './ServiceList.module.scss';
 import classNames from 'classnames/bind';
 

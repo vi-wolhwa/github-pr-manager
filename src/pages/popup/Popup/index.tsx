@@ -9,6 +9,7 @@ import useStorage from '@root/src/shared/hooks/useStorage';
 import userStorage from '@root/src/shared/storages/userStorage';
 import Button from './components/Button';
 import UserCode from './components/UserCode';
+import PRTemplateSettingContainer from './containers/PRTemplateSetting';
 
 const cx = classNames.bind(styles);
 
@@ -69,6 +70,7 @@ const Popup = () => {
       {userId && (
         <div>
           <p>{`안녕하세요. ${userId}님`}</p>
+          <PRTemplateSettingContainer />
         </div>
       )}
     </div>

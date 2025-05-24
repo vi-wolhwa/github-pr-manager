@@ -1,5 +1,8 @@
 import { SELECTOR } from '../constants/selector';
 
+/**
+ * 브랜치 이름을 가져오는 함수
+ */
 export const getBranchName = () => {
   const branchNames = document.querySelectorAll(SELECTOR.branchName);
 

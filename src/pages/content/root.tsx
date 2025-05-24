@@ -1,3 +1,4 @@
+import runPRTemplatesFetcher from './PRTemplates';
 import runSampleNaverScript from './sampleNaver';
 
 /**
@@ -6,6 +7,7 @@ import runSampleNaverScript from './sampleNaver';
  */
 const runContentScripts = () => {
   runSampleNaverScript();
+  runPRTemplatesFetcher();
 };
 
 /*

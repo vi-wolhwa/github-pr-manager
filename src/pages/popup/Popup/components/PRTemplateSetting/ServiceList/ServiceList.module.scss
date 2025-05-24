@@ -1,0 +1,27 @@
+.service_list {
+  padding: 12px;
+  margin: 0;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.service_item {
+  list-style: none;
+  display: flex;
+}
+
+.finger_emoji {
+  transform: translateY(-2px);
+}
+
+.name {
+  margin-right: 20px;
+  flex: 1;
+}
+
+.display_name {
+  flex: 1;
+  margin-left: 20px;
+}

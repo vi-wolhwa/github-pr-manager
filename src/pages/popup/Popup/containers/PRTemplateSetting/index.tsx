@@ -6,14 +6,17 @@ const serviceList: Service[] = [
     name: 'content',
     displayName: '콘텐츠',
   },
+  {
+    name: 'test',
+    displayName: '테스트',
+  },
 ];
 
 const PRTemplateSettingContainer = () => {
   return (
     <PRTemplateSetting.Wrapper>
-      {serviceList.map(service => (
-        <PRTemplateSetting.ServiceItem key={service.name} service={service} />
-      ))}
+      <PRTemplateSetting.TemplateInput />
+      <PRTemplateSetting.ServiceList serviceList={serviceList} />
     </PRTemplateSetting.Wrapper>
   );
 };

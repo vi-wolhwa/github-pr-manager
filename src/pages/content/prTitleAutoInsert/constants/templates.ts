@@ -2,5 +2,8 @@
  * PR 제목 템플릿
  */
 export const TEMPLATES = {
-  feature: `[{due_date}] [{service}] {feature}: [{ticket}]`,
+  // feature용 템플릿
+  FEATURE: `[{due_date}] [{service}] {feature}: [{ticket}]`,
+  // merge용 템플릿
+  MERGE: `{week} [{due_date}] {compare} 👉 {base}`,
 };

@@ -1,5 +1,6 @@
 import { isCurrentPage } from '../shared/utils/siteUtils';
 import { getBranchName } from './helpers/getBranchName';
+import { getPRTitle } from './helpers/getPRTitle';
 import { insertPRTitle } from './helpers/insertPRTitle';
 
 /**
@@ -7,8 +8,9 @@ import { insertPRTitle } from './helpers/insertPRTitle';
  */
 const runPRTitleAutoInsert = () => {
   if (isCurrentPage('github')) {
-    getBranchName();
-    insertPRTitle();
+    const prBranches = getBranchName();
+    const prTitle = getPRTitle(prBranches);
+    insertPRTitle(prTitle);
   }
 };
 

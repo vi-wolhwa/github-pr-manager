@@ -6,10 +6,10 @@ import { insertPRTitle } from './helpers/insertPRTitle';
 /**
  * 테스트를 위한 Sample Content 스크립트
  */
-const runPRTitleAutoInsert = () => {
+const runPRTitleAutoInsert = async () => {
   if (isCurrentPage('github')) {
     const prBranches = getBranchName();
-    const prTitle = getPRTitle(prBranches);
+    const prTitle = await getPRTitle(prBranches);
     insertPRTitle(prTitle);
   }
 };

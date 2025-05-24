@@ -1,5 +1,8 @@
 import { SELECTOR } from '../constants/selector';
-import { PRBranches } from '../types';
+export type PRBranches = {
+  base: string;
+  compare: string;
+};
 
 /**
  * 브랜치 이름을 가져오는 함수

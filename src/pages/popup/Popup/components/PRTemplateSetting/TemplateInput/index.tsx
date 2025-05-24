@@ -39,8 +39,22 @@ const TemplateInput = ({ addService }: Props) => {
 
   return (
     <div className={cx('wrap')}>
-      <input className={cx('input')} value={name} ref={nameRef} onChange={onChangeName} onKeyDown={onKeyDown} />
-      <input className={cx('input')} value={displayName} onChange={onChangeDisplayName} onKeyDown={onKeyDown} />
+      <input
+        className={cx('input')}
+        value={name}
+        ref={nameRef}
+        onChange={onChangeName}
+        onKeyDown={onKeyDown}
+        placeholder="feat/{service}"
+      />
+      <span className={cx('finger_emoji')}>👉</span>
+      <input
+        className={cx('input')}
+        value={displayName}
+        onChange={onChangeDisplayName}
+        onKeyDown={onKeyDown}
+        placeholder="pr에 보일 이름"
+      />
       <button className={cx('button')} onClick={onClickAddButton}>
         추가
       </button>

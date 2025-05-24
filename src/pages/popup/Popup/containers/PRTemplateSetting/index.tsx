@@ -17,10 +17,15 @@ const PRTemplateSettingContainer = () => {
     serviceListStorage.set([...serviceList, service]);
   };
 
+  const removeService = (name: string) => {
+    const newServiceList = serviceList.filter(item => item.name !== name);
+    serviceListStorage.set(newServiceList);
+  };
+
   return (
     <PRTemplateSetting.Wrapper>
       <PRTemplateSetting.TemplateInput addService={addService} />
-      <PRTemplateSetting.ServiceList serviceList={serviceList} />
+      <PRTemplateSetting.ServiceList serviceList={serviceList} removeService={removeService} />
     </PRTemplateSetting.Wrapper>
   );
 };

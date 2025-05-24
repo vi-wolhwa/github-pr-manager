@@ -1,5 +1,11 @@
+.title {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 10px 0;
+}
+
 .service_list {
-  padding: 12px;
+  padding: 0;
   margin: 0;
   font-size: 14px;
   display: flex;
@@ -10,6 +16,7 @@
 .service_item {
   list-style: none;
   display: flex;
+  align-items: center;
 }
 
 .finger_emoji {
@@ -24,4 +31,18 @@
 .display_name {
   flex: 1;
   margin-left: 20px;
+}
+
+.remove_button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  padding: 4px 6px;
+
+  &:hover {
+    background-color: rgb(230, 230, 230);
+  }
 }

@@ -11,7 +11,7 @@ type Props = {
 
 const Button = ({ onClick, children }: PropsWithChildren<Props>) => {
   return (
-    <button className={cx('button')} onClick={onClick}>
+    <button className="btn btn-primary" onClick={onClick}>
       {children}
     </button>
   );

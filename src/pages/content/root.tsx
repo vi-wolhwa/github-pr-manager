@@ -1,5 +1,9 @@
 import runSampleNaverScript from './sampleNaver';
 
+import { setPrimerColorMode } from './shared/ui/setPrimerColorMode';
+
+setPrimerColorMode();
+
 /**
  * Content 스크립트를 실행하는 함수
  * - NOTE: 실행할 스크립트를 함수 내부에서 호출하세요.

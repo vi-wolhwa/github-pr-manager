@@ -10,6 +10,11 @@ import userStorage from '@root/src/shared/storages/userStorage';
 import Button from './components/Button';
 import UserCode from './components/UserCode';
 
+import { setPrimerColorMode } from '../../content/shared/ui/setPrimerColorMode';
+import Dialog from './components/Dialog';
+
+setPrimerColorMode();
+
 const cx = classNames.bind(styles);
 
 /**
@@ -43,27 +48,17 @@ const Popup = () => {
     <div className={cx('wrap')}>
       {/* 로그인 전 */}
       {!userId && (
-        <>
-          {/* 등록 전 */}
-          {!deviceInfo && (
-            <div>
-              <Button onClick={onClickRegisterButton}>깃허브 등록하기</Button>
-            </div>
+        <div>
+          {deviceInfo ? (
+            <Dialog
+              userCode={deviceInfo.user_code}
+              onClickCopyButton={onClickCopyButton}
+              onClickMoveRegisterPage={onClickMoveRegisterPage}
+            />
+          ) : (
+            <Button onClick={onClickRegisterButton}>깃허브 등록하기</Button>
           )}
-          {/* 등록 위한 코드 보여주는 단계 */}
-          {deviceInfo && (
-            <div>
-              <UserCode onClick={onClickCopyButton} userCode={deviceInfo.user_code} />
-              {showRegisterPage && <p>복사가 완료되었습니다.</p>}
-            </div>
-          )}
-          {/* 등록 페이지로 이동 위한  단계 */}
-          {showRegisterPage && (
-            <div>
-              <Button onClick={onClickMoveRegisterPage}>등록 페이지로 이동</Button>
-            </div>
-          )}
-        </>
+        </div>
       )}
       {/* 로그인 이후 */}
       {userId && (

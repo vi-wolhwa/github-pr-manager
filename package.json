@@ -28,6 +28,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@primer/css": "^21.5.1",
     "classnames": "2.5.1",
     "construct-style-sheets-polyfill": "3.1.0",
     "react": "19.1.0",

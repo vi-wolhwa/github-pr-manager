@@ -10,7 +10,7 @@ type Props = {
 
 const UserCode = ({ userCode, onClick }: Props) => {
   return (
-    <button onClick={onClick} className={cx('code')}>
+    <button onClick={onClick} className="btn btn-block color-bg-subtle f4 text-bold border border-default rounded-2">
       {userCode}
     </button>
   );

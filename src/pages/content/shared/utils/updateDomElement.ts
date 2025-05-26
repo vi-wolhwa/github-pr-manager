@@ -1,4 +1,4 @@
-type Action = 'addClass' | 'removeClass' | 'addStyle' | 'addAttribute' | 'removeAttribute';
+type Action = 'addClass' | 'removeClass' | 'setClass' | 'addStyle' | 'addAttribute' | 'removeAttribute';
 
 type AttributeParam = { attr: string; value?: string | boolean };
 
@@ -55,6 +55,13 @@ const updateDomClassOrStyle = ({
       case 'removeClass':
         if (classNames?.length) {
           target.classList.remove(...classNames);
+        }
+        break;
+      case 'setClass': // <-- 여기에만 추가!
+        if (classNames?.length) {
+          target.className = classNames.join(' ');
+        } else {
+          target.className = '';
         }
         break;
       case 'addStyle':

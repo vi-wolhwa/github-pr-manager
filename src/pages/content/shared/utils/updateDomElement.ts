@@ -1,4 +1,6 @@
-type Action = 'addClass' | 'removeClass' | 'addStyle';
+type Action = 'addClass' | 'removeClass' | 'addStyle' | 'addAttribute' | 'removeAttribute';
+
+type AttributeParam = { attr: string; value?: string | boolean };
 
 type Params = {
   /** 조작할 target 요소의 selector */
@@ -9,6 +11,8 @@ type Params = {
   classNames?: string[];
   /** 추가할 스타일 객체 배열 (optional) */
   styles?: Partial<CSSStyleDeclaration>[];
+  /** 추가/제거할 속성 객체 배열 (optional) */
+  attributes?: AttributeParam[];
   /** MutationObserver의 최대 대기 시간(ms) (default: 1000) */
   timeoutMs?: number;
   /** target 요소 조작 전에 실행할 콜백 */
@@ -16,12 +20,21 @@ type Params = {
 };
 
 /**
- * DOM에서 특정 요소를 찾은 뒤, class 추가/삭제 또는 style 추가를 수행하는 유틸 함수
+ * DOM에서 특정 요소를 찾은 뒤,
+ * 클래스 추가/삭제, 스타일 추가, 속성 추가/제거를 수행하는 유틸 함수
  * - 대상 요소가 없으면 MutationObserver로 대기
  */
-const updateDomElement = ({ targetSelector, action, classNames, styles, timeoutMs = 1000, onBefore }: Params): void => {
+const updateDomClassOrStyle = ({
+  targetSelector,
+  action,
+  classNames,
+  styles,
+  attributes,
+  timeoutMs = 1000,
+  onBefore,
+}: Params): void => {
   /**
-   * 실제로 class/style 조작을 수행하는 함수
+   * 실제로 class/style/attribute 조작을 수행하는 함수
    */
   const mutate = (observer: MutationObserver) => {
     const target = document.querySelector(targetSelector) as HTMLElement | null;
@@ -35,21 +48,45 @@ const updateDomElement = ({ targetSelector, action, classNames, styles, timeoutM
 
     switch (action) {
       case 'addClass':
-        if (classNames && classNames.length > 0) {
+        if (classNames?.length) {
           target.classList.add(...classNames);
         }
         break;
       case 'removeClass':
-        if (classNames && classNames.length > 0) {
+        if (classNames?.length) {
           target.classList.remove(...classNames);
         }
         break;
       case 'addStyle':
-        if (styles && styles.length > 0) {
+        if (styles?.length) {
           styles.forEach(styleObj => {
             Object.entries(styleObj).forEach(([key, value]) => {
               target.style[key] = value ?? '';
             });
+          });
+        }
+        break;
+      case 'addAttribute':
+        if (attributes?.length) {
+          attributes.forEach(({ attr, value }) => {
+            if (typeof value === 'boolean') {
+              if (value) {
+                target.setAttribute(attr, '');
+              } else {
+                target.removeAttribute(attr);
+              }
+            } else if (typeof value === 'string') {
+              target.setAttribute(attr, value);
+            } else {
+              target.setAttribute(attr, '');
+            }
+          });
+        }
+        break;
+      case 'removeAttribute':
+        if (attributes?.length) {
+          attributes.forEach(({ attr }) => {
+            target.removeAttribute(attr);
           });
         }
         break;
@@ -67,4 +104,4 @@ const updateDomElement = ({ targetSelector, action, classNames, styles, timeoutM
   setTimeout(() => observer.disconnect(), timeoutMs);
 };
 
-export default updateDomElement;
+export default updateDomClassOrStyle;

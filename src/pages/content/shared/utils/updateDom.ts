@@ -44,7 +44,7 @@ const updateDom = ({ action, targetSelector, component, htmlElement, timeoutMs =
   /**
    * 실제 DOM을 조작하는 함수
    */
-  const mutate = (observer: MutationObserver) => {
+  const mutate = (observer?: MutationObserver) => {
     const target = document.querySelector(targetSelector);
 
     /* 대상 요소가 없다면 대기 */
@@ -88,8 +88,15 @@ const updateDom = ({ action, targetSelector, component, htmlElement, timeoutMs =
     }
 
     /* 작업 완료 후, 감시 중단 */
-    observer.disconnect();
+    observer?.disconnect();
   };
+
+  /* 이미 요소가 있다면 즉시 실행 */
+  if (document.querySelector(targetSelector)) {
+    mutate();
+
+    return;
+  }
 
   /* DOM 변화 감시: SPA · 지연 렌더 대응 */
   const observer = new MutationObserver(() => mutate(observer));

@@ -2,7 +2,7 @@ import updateDom from '../shared/utils/updateDom';
 import { isCurrentPage } from '../shared/utils/siteUtils';
 import SELECTOR from './constants/selector';
 import EditorNavbarSplitTabButton from './components/EditorNavbarSplitTabButton';
-import getDomElement from '../shared/utils/getDomElement';
+import copyDomElement from '../shared/utils/getDomElement';
 import EditorContentContainer from './components/EditorContentContainer/index';
 import COMPONENT_ID from './constants/componentId';
 
@@ -19,13 +19,13 @@ const runPREditorPreviewScript = async () => {
     });
 
     /** Editor > Content > Write 영역 */
-    const editorContentWrite = await getDomElement({
+    const editorContentWrite = await copyDomElement({
       action: 'cut',
       targetSelector: SELECTOR.COMPARE.editorContentWrite,
     });
 
     /** Editor > Content > Preview 영역 */
-    const editorContentPreview = await getDomElement({
+    const editorContentPreview = await copyDomElement({
       action: 'cut',
       targetSelector: SELECTOR.COMPARE.editorContentPreview,
     });

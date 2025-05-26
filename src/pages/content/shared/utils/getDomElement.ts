@@ -16,7 +16,7 @@ interface Params {
 /**
  * 지정된 selector의 요소를 복사 또는 잘라내는 함수
  */
-const getDomElement = ({ action, targetSelector, timeoutMs = 1000 }: Params): Promise<HTMLElement | null> => {
+const copyDomElement = ({ action, targetSelector, timeoutMs = 1000 }: Params): Promise<HTMLElement | null> => {
   return new Promise(resolve => {
     /**
      * 대상 요소를 찾고, 찾았다면 반환(resolve)하는 함수
@@ -61,4 +61,4 @@ const getDomElement = ({ action, targetSelector, timeoutMs = 1000 }: Params): Pr
   });
 };
 
-export default getDomElement;
+export default copyDomElement;

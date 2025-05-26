@@ -1,6 +1,18 @@
-type Action = 'addClass' | 'removeClass' | 'setClass' | 'addStyle' | 'addAttribute' | 'removeAttribute';
+type Action =
+  | 'addClass'
+  | 'removeClass'
+  | 'setClass'
+  | 'addStyle'
+  | 'addAttribute'
+  | 'removeAttribute'
+  | 'addEventListener';
 
 type AttributeParam = { attr: string; value?: string | boolean };
+
+type EventListenerParam = {
+  event: keyof HTMLElementEventMap;
+  handler: (e: Event) => void;
+};
 
 type Params = {
   /** 조작할 target 요소의 selector */
@@ -13,6 +25,8 @@ type Params = {
   styles?: Partial<CSSStyleDeclaration>[];
   /** 추가/제거할 속성 객체 배열 (optional) */
   attributes?: AttributeParam[];
+  /** 추가할 이벤트 핸들러 객체 (optional) */
+  eventListener?: EventListenerParam;
   /** MutationObserver의 최대 대기 시간(ms) (default: 1000) */
   timeoutMs?: number;
   /** target 요소 조작 전에 실행할 콜백 */
@@ -21,8 +35,7 @@ type Params = {
 
 /**
  * DOM에서 특정 요소를 찾은 뒤,
- * 클래스 추가/삭제, 스타일 추가, 속성 추가/제거를 수행하는 유틸 함수
- * - 대상 요소가 없으면 MutationObserver로 대기
+ * 클래스 추가/삭제, 스타일 추가, 속성 추가/제거, 이벤트리스너 추가를 수행하는 유틸 함수
  */
 const updateDomClassOrStyle = ({
   targetSelector,
@@ -30,6 +43,7 @@ const updateDomClassOrStyle = ({
   classNames,
   styles,
   attributes,
+  eventListener,
   timeoutMs = 1000,
   onBefore,
 }: Params): void => {
@@ -95,6 +109,11 @@ const updateDomClassOrStyle = ({
           attributes.forEach(({ attr }) => {
             target.removeAttribute(attr);
           });
+        }
+        break;
+      case 'addEventListener':
+        if (eventListener) {
+          target.addEventListener(eventListener.event, eventListener.handler);
         }
         break;
     }

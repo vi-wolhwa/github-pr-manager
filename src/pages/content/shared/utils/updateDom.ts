@@ -1,4 +1,5 @@
 import { createRoot } from 'react-dom/client';
+import MOUNT_PREFIX from '../constants/mountPrefix';
 
 type Action = 'replace' | 'insertBefore' | 'insertAfter' | 'append' | 'prepend' | 'remove';
 
@@ -14,6 +15,8 @@ type Params = {
   action: Action;
   /** 조작할 target 요소의 selector */
   targetSelector: string;
+  /** mountDiv의 id를 생성하기 위한, React 컴포넌트의 id */
+  componentId?: string;
   /** 삽입/교체할 React 컴포넌트 */
   component?: React.ReactElement;
   /** 삽입/교체할 HTML 요소 */
@@ -27,13 +30,22 @@ type Params = {
 /**
  * targetSelector 로 찾은 DOM 노드에 React 컴포넌트 또는 HTML 요소를 삽입·교체하거나, DOM 노드를 제거한다.
  */
-const updateDom = ({ action, targetSelector, component, htmlElement, timeoutMs = 1000, onBefore }: Params) => {
+const updateDom = ({
+  action,
+  targetSelector,
+  componentId,
+  component,
+  htmlElement,
+  timeoutMs = 1000,
+  onBefore,
+}: Params) => {
   /**
    * mountDiv를 만들고 컴포넌트를 렌더하거나, htmlElement를 추가하는 함수
    */
   const mount = (parent: Element, refNode?: ChildNode | null) => {
     if (component) {
       const mountDiv = document.createElement('div');
+      mountDiv.id = `${MOUNT_PREFIX}${componentId}`;
       parent.insertBefore(mountDiv, refNode ?? null);
       createRoot(mountDiv).render(component);
     } else if (htmlElement) {

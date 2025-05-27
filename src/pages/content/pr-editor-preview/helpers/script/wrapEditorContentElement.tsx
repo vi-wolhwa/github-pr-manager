@@ -1,8 +1,9 @@
-import copyDomElement from '../../shared/utils/getDomElement';
-import updateDom from '../../shared/utils/updateDom';
-import EditorContentContainer from '../components/EditorContentContainer/index';
-import COMPONENT_ID from '../constants/componentId';
-import SELECTOR from '../constants/selector';
+import copyDomElement from '../../../shared/utils/copyDomElement';
+import updateDom from '../../../shared/utils/updateDom';
+import COMPONENT_ID from '../../constants/componentId';
+import SELECTOR from '../../constants/selector';
+import EditorContentContainer from '../../components/EditorContentContainer/index';
+import EditorContentCustomPreview from '../../components/EditorContentCustomPreview/index';
 
 /**
  * Editor > Content 내부 요소(Write, Preview 영역)을 조작하기 위하여 랩핑하는 함수
@@ -21,7 +22,7 @@ const wrapEditorContentElement = async () => {
     targetSelector: SELECTOR.COMPARE.editorContentPreview,
   });
 
-  /* Editor > Content 내부 요소(write, preview, split)를 포함하는 컨테이너 렌더링 */
+  /* Write 영역과 커스텀 Preview 영역을 포함하는 컨테이너 렌더링 */
   updateDom({
     action: 'append',
     targetSelector: SELECTOR.COMPARE.editor,
@@ -38,6 +39,12 @@ const wrapEditorContentElement = async () => {
     action: 'append',
     targetSelector: `#${COMPONENT_ID.EditorContentContainer}`,
     htmlElement: editorContentPreview,
+  });
+
+  updateDom({
+    action: 'append',
+    targetSelector: `#${COMPONENT_ID.EditorContentContainer}`,
+    component: <EditorContentCustomPreview />,
   });
 };
 

@@ -1,19 +1,20 @@
-import { useEffect, useState } from 'react';
+import COMPONENT_ID from '../../constants/componentId';
+import onClickSplitTabButton from '../../helpers/event/onClickSplitTabButton';
 
+/**
+ * Editor > Navbar > Split 탭 버튼
+ */
 const EditorNavbarSplitTabButton = () => {
-  const [isSelected, setIsSelected] = useState(false);
-
   const onClick = (e: React.MouseEvent) => {
     e.preventDefault();
+    onClickSplitTabButton();
   };
 
   return (
     <button
+      id={COMPONENT_ID.EditorNavbarSplitTabButton}
       type="button"
       className="btn-link tabnav-tab preview-tab js-preview-tab"
-      role="tab"
-      aria-selected={isSelected}
-      tabIndex={isSelected ? 0 : -1}
       onClick={onClick}>
       Split
     </button>

@@ -1,6 +1,16 @@
+// github PR 페이지 확인 함수
 export const isGitHubPRPage = () => {
-  // compare 페이지 체크 (/compare/branch1...branch2)
-  return location.pathname.includes('/compare/');
+  // github.com 도메인 체크
+  if (!location.hostname.includes('github.com')) return false;
+
+  // compare 페이지 체크
+  if (!location.pathname.includes('/compare/')) return false;
+
+  // PR 헤더 체크
+  const prHeader = document.querySelector('.compare-pr-header .Subhead-heading');
+  if (!prHeader || !prHeader.textContent?.includes('Open a pull request')) return false;
+
+  return true;
 };
 
 // 표 생성 함수

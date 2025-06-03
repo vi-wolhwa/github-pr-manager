@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 export default function App() {
   useEffect(() => {
     console.log('content view loaded');
-    // registerUrlObserver();
+    registerUrlObserver();
 
     // URL 변경 감지 시 버튼 추가
     const checkAndAddButton = () => {

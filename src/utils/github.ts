@@ -3,6 +3,29 @@ export const isGitHubPRPage = () => {
   return location.pathname.includes('/compare/');
 };
 
+// 텍스트 에어리어에 문자열 삽입 함수
+const insertTextAtCursor = (textarea: HTMLTextAreaElement, text: string) => {
+  const startPos = textarea.selectionStart;
+  const endPos = textarea.selectionEnd;
+  const before = textarea.value.substring(0, startPos);
+  const after = textarea.value.substring(endPos);
+
+  // 문자열 삽입
+  textarea.value = before + text + after;
+
+  // 커서 위치 조정 (삽입된 텍스트 뒤로)
+  const newCursorPos = startPos + text.length;
+  textarea.selectionStart = newCursorPos;
+  textarea.selectionEnd = newCursorPos;
+
+  // 텍스트 에어리어에 포커스 주기
+  textarea.focus();
+
+  // 변경 이벤트 발생시키기 (GitHub의 자동 저장 등이 동작하도록)
+  const event = new Event('input', { bubbles: true });
+  textarea.dispatchEvent(event);
+};
+
 export const addTestButton = () => {
   // 헤딩 버튼 찾기
   const headingButton = document.querySelector('[data-md-button="header-3"]');
@@ -51,7 +74,15 @@ export const addTestButton = () => {
 
   // 클릭 이벤트 추가
   testButton.addEventListener('click', () => {
-    alert('테스트를 실행합니다!');
+    // PR 설명 텍스트 에어리어 찾기
+    const textarea = document.querySelector('#pull_request_body') as HTMLTextAreaElement;
+    if (!textarea) {
+      alert('PR 설명 입력 필드를 찾을 수 없습니다.');
+      return;
+    }
+
+    // [test] 문자열 삽입
+    insertTextAtCursor(textarea);
   });
 
   // 버튼과 툴팁을 컨테이너에 추가

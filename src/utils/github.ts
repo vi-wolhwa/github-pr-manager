@@ -4,17 +4,24 @@ export const isGitHubPRPage = () => {
 };
 
 // 텍스트 에어리어에 문자열 삽입 함수
-const insertTextAtCursor = (textarea: HTMLTextAreaElement, text: string) => {
+const insertTextAtCursor = (textarea: HTMLTextAreaElement) => {
   const startPos = textarea.selectionStart;
   const endPos = textarea.selectionEnd;
   const before = textarea.value.substring(0, startPos);
   const after = textarea.value.substring(endPos);
 
+  const template = `<details>
+<summary>제목 접기/펼치기</summary>
+내용 블라블라
+</details>
+
+`; // 마지막 줄바꿈 추가
+
   // 문자열 삽입
-  textarea.value = before + text + after;
+  textarea.value = before + template + after;
 
   // 커서 위치 조정 (삽입된 텍스트 뒤로)
-  const newCursorPos = startPos + text.length;
+  const newCursorPos = startPos + template.length;
   textarea.selectionStart = newCursorPos;
   textarea.selectionEnd = newCursorPos;
 
@@ -49,10 +56,10 @@ export const addTestButton = () => {
   testButton.setAttribute('data-view-component', 'true');
   testButton.setAttribute('tabindex', '-1');
 
-  // 버튼 아이콘 설정
+  // 버튼 아이콘 설정 (chevron-down 아이콘으로 변경)
   testButton.innerHTML = `
-    <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-play Button-visual">
-      <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm4.879-2.773 4.264 2.559a.25.25 0 0 1 0 .428l-4.264 2.559A.25.25 0 0 1 6 10.559V5.442a.25.25 0 0 1 .379-.215Z"></path>
+    <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-chevron-down Button-visual">
+      <path d="M12.78 5.22a.749.749 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.06 0L3.22 6.28a.749.749 0 1 1 1.06-1.06L8 8.939l3.72-3.719a.749.749 0 0 1 1.06 0Z"></path>
     </svg>
   `;
 
@@ -68,7 +75,7 @@ export const addTestButton = () => {
   tooltip.className = 'position-absolute sr-only';
   tooltip.setAttribute('aria-hidden', 'true');
   tooltip.setAttribute('role', 'tooltip');
-  tooltip.textContent = 'Run Test';
+  tooltip.textContent = '토글 추가';
 
   testButton.setAttribute('aria-labelledby', tooltipId);
 
@@ -81,7 +88,7 @@ export const addTestButton = () => {
       return;
     }
 
-    // [test] 문자열 삽입
+    // details 태그 삽입
     insertTextAtCursor(textarea);
   });
 

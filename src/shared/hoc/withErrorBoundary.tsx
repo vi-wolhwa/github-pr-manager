@@ -1,5 +1,8 @@
 import { Component, ComponentType, ReactElement } from 'react';
 
+/*
+ * TODO: 고차 컴포넌트 제거 @tobi-ouo
+ */
 class ErrorBoundary extends Component<
   {
     children: ReactElement;

@@ -1,6 +1,7 @@
 import fetchPRTemplates from './apis/fetchPRTemplates';
 import TemplateSelector from './components/TemplateSelector';
 import updateDom from '../shared/utils/updateDom';
+import { isCurrentPathname } from '../shared/utils/siteUtils';
 import SELECTOR from './constants/selector';
 
 let prevUrl = location.href;
@@ -50,7 +51,7 @@ const runPRTemplateScriptCore = async () => {
  */
 const runPRTemplateScript = () => {
   setInterval(() => {
-    const isPRPage = location.pathname.includes('/compare/');
+    const isPRPage = isCurrentPathname('github_pr_create');
 
     if (!isPRPage) {
       return;

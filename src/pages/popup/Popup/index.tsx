@@ -10,7 +10,6 @@ import userStorage from '@root/src/shared/storages/userStorage';
 import UserCode from './components/UserCode';
 
 import { Button, Heading, Text, Flash, Stack } from '@primer/react';
-import PRTemplateSettingContainer from './containers/PRTitleAutoInsert';
 import { TABS } from './constants/tabs';
 import { UnderlinePanels } from '@primer/react/experimental';
 import Home from './containers/Home';

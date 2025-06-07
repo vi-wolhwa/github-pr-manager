@@ -1,6 +1,7 @@
 /// <reference types="vitest" />
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import svgr from 'vite-plugin-svgr';
 import path, { resolve } from 'path';
 import { getCacheInvalidationKey, getPlugins } from './utils/vite';
 
@@ -21,7 +22,16 @@ export default defineConfig({
       '@shared': resolve(srcDir, 'shared'),
     },
   },
-  plugins: [...getPlugins(isDev), react()],
+  plugins: [
+    ...getPlugins(isDev),
+    svgr({
+      include: '**/*.svg?react',
+      svgrOptions: {
+        exportType: 'default',
+      },
+    }),
+    react(),
+  ],
   publicDir: resolve(rootDir, 'public'),
   build: {
     outDir: resolve(rootDir, 'dist'),
@@ -41,6 +51,7 @@ export default defineConfig({
         assetFileNames: assetInfo => {
           const { name } = path.parse(assetInfo.name);
           const assetFileName = name === 'contentStyle' ? `${name}${getCacheInvalidationKey()}` : name;
+
           return `assets/[ext]/${assetFileName}.chunk.[ext]`;
         },
       },

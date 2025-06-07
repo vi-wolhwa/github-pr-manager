@@ -11,8 +11,15 @@ import UserCode from './components/UserCode';
 
 import { Button, Heading, Text, Flash, Stack } from '@primer/react';
 import PRTemplateSettingContainer from './containers/PRTemplateSetting';
+import { TABS } from './constants/tabs';
+import { UnderlinePanels } from '@primer/react/experimental';
+import Home from './containers/Home';
+import PRTemplate from './containers/PRTemplate';
+import Settings from './containers/Settings';
 
 const cx = classNames.bind(styles);
+
+const tabList = Object.values(TABS);
 
 /**
  * 익스텐션 아이콘 클릭 시 첫 등장하는 화면
@@ -108,7 +115,27 @@ const Popup = () => {
             }}>
             확장 프로그램 인증 해제하기
           </Button>
-          <PRTemplateSettingContainer />
+          <UnderlinePanels>
+            {tabList.map(tab => (
+              <UnderlinePanels.Tab key={tab}>{tab}</UnderlinePanels.Tab>
+            ))}
+            {/* 홈 */}
+            <UnderlinePanels.Panel>
+              <Home />
+            </UnderlinePanels.Panel>
+            {/* 제목 자동삽입 */}
+            <UnderlinePanels.Panel>
+              <PRTemplateSettingContainer />
+            </UnderlinePanels.Panel>
+            {/* PR 템플릿 */}
+            <UnderlinePanels.Panel>
+              <PRTemplate />
+            </UnderlinePanels.Panel>
+            {/* 설정 */}
+            <UnderlinePanels.Panel>
+              <Settings />
+            </UnderlinePanels.Panel>
+          </UnderlinePanels>
         </div>
       )}
     </div>

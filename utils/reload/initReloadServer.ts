@@ -17,7 +17,9 @@ function initReloadServer() {
 
     ws.addEventListener('close', () => clientsThatNeedToUpdate.delete(ws));
     ws.addEventListener('message', event => {
-      if (typeof event.data !== 'string') return;
+      if (typeof event.data !== 'string') {
+        return;
+      }
 
       const message = MessageInterpreter.receive(event.data);
 
@@ -45,10 +47,14 @@ const debounceSrc = debounce(function (path: string) {
     ws.send(MessageInterpreter.send({ type: 'wait_update', path: pathConverted })),
   );
 }, 100);
-chokidar.watch('src', { ignorePermissionErrors: true }).on('all', (_, path) => debounceSrc(path));
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const srcWatcher = chokidar.watch('src', { ignorePermissionErrors: true }) as any;
+srcWatcher.on('all', (_, path) => debounceSrc(path));
 
 /** CHECK:: manifest.js was updated **/
-chokidar.watch('manifest.js', { ignorePermissionErrors: true }).on('all', () => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const manifestWatcher = chokidar.watch('manifest.js', { ignorePermissionErrors: true }) as any;
+manifestWatcher.on('all', () => {
   needToForceReload = true;
 });
 

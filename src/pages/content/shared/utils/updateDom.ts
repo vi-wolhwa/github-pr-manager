@@ -16,6 +16,8 @@ type Params = {
   targetSelector: string;
   /** 삽입/교체할 React 컴포넌트 */
   component?: React.ReactElement;
+  /** 삽입/교체할 HTML 요소 */
+  htmlElement?: HTMLElement;
   /** MutationObserver의 최대 대기 시간(ms) (default: 1000) */
   timeoutMs?: number;
   /** target 요소 조작 전에 실행할 콜백 */
@@ -23,24 +25,26 @@ type Params = {
 };
 
 /**
- * targetSelector 로 찾은 DOM 노드에 React 컴포넌트를 삽입·교체하거나, DOM 노드를 제거한다.
+ * targetSelector 로 찾은 DOM 노드에 React 컴포넌트 또는 HTML 요소를 삽입·교체하거나, DOM 노드를 제거한다.
  */
-const updateDom = ({ action, targetSelector, component, timeoutMs = 1000, onBefore }: Params) => {
+const updateDom = ({ action, targetSelector, component, htmlElement, timeoutMs = 1000, onBefore }: Params) => {
   /**
-   * 공통: mount div를 만들고 컴포넌트를 렌더링하는 함수
+   * mountDiv를 만들고 컴포넌트를 렌더하거나, htmlElement를 추가하는 함수
    */
   const mount = (parent: Element, refNode?: ChildNode | null) => {
-    const mountDiv = document.createElement('div');
-    parent.insertBefore(mountDiv, refNode ?? null);
     if (component) {
+      const mountDiv = document.createElement('div');
+      parent.insertBefore(mountDiv, refNode ?? null);
       createRoot(mountDiv).render(component);
+    } else if (htmlElement) {
+      parent.insertBefore(htmlElement, refNode ?? null);
     }
   };
 
   /**
    * 실제 DOM을 조작하는 함수
    */
-  const mutate = (observer: MutationObserver) => {
+  const mutate = (observer?: MutationObserver) => {
     const target = document.querySelector(targetSelector);
 
     /* 대상 요소가 없다면 대기 */
@@ -84,8 +88,15 @@ const updateDom = ({ action, targetSelector, component, timeoutMs = 1000, onBefo
     }
 
     /* 작업 완료 후, 감시 중단 */
-    observer.disconnect();
+    observer?.disconnect();
   };
+
+  /* 이미 요소가 있다면 즉시 실행 */
+  if (document.querySelector(targetSelector)) {
+    mutate();
+
+    return;
+  }
 
   /* DOM 변화 감시: SPA · 지연 렌더 대응 */
   const observer = new MutationObserver(() => mutate(observer));

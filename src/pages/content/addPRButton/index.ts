@@ -119,7 +119,7 @@ const addPRMarkdownButtons = () => {
       return;
     }
 
-    const float = createFloatingInput(tableButton.getBoundingClientRect(), (rows, cols) => {
+    const float = createFloatingInput(tableButton, (rows, cols) => {
       const tableText = createTable(rows, cols);
       insertTextAtCursor(textarea, tableText + '\n');
     });

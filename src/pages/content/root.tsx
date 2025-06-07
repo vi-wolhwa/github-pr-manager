@@ -1,3 +1,4 @@
+import runPREditorPreviewScript from './reviewStatus';
 import runSampleNaverScript from './sampleNaver';
 
 /**
@@ -6,6 +7,7 @@ import runSampleNaverScript from './sampleNaver';
  */
 const runContentScripts = () => {
   runSampleNaverScript();
+  runPREditorPreviewScript();
 };
 
 /*

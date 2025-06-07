@@ -10,6 +10,7 @@ import userStorage from '@root/src/shared/storages/userStorage';
 import UserCode from './components/UserCode';
 
 import { Button, Heading, Text, Flash, Stack } from '@primer/react';
+import PRTemplateSettingContainer from './containers/PRTemplateSetting';
 
 const cx = classNames.bind(styles);
 
@@ -107,6 +108,7 @@ const Popup = () => {
             }}>
             확장 프로그램 인증 해제하기
           </Button>
+          <PRTemplateSettingContainer />
         </div>
       )}
     </div>

@@ -29,6 +29,7 @@
   "type": "module",
   "dependencies": {
     "@primer/css": "^21.5.1",
+    "@primer/octicons-react": "^19.15.2",
     "@primer/primitives": "^10.7.0",
     "@primer/react": "^37.24.0",
     "classnames": "2.5.1",

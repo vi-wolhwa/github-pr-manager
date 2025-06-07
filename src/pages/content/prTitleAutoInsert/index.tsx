@@ -13,20 +13,20 @@ const runPRTitleAutoInsert = async () => {
   };
 
   if (isCurrentPage('github')) {
-    setInterval(async () => {
-      if (!isCurrentPage('github_pr')) {
-        return; // 현재 페이지가 GitHub PR 페이지가 아니라면 함수 종료
-      }
-      const prBranches = getBranchName();
-      if (prevBranchName.base === prBranches.base && prevBranchName.compare === prBranches.compare) {
-        return; // 브랜치 이름이 변경되지 않았다면 함수 종료
-      }
-      prevBranchName = { ...prBranches };
+    // setInterval(async () => {
+    if (!isCurrentPage('github_pr')) {
+      return; // 현재 페이지가 GitHub PR 페이지가 아니라면 함수 종료
+    }
+    const prBranches = getBranchName();
+    if (prevBranchName.base === prBranches.base && prevBranchName.compare === prBranches.compare) {
+      return; // 브랜치 이름이 변경되지 않았다면 함수 종료
+    }
+    prevBranchName = { ...prBranches };
 
-      const prTitle = await getPRTitle(prBranches);
+    const prTitle = await getPRTitle(prBranches);
 
-      insertPRTitle(prTitle);
-    }, 500);
+    insertPRTitle(prTitle);
+    // }, 500);
   }
 };
 

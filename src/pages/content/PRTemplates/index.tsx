@@ -2,43 +2,70 @@ import fetchPRTemplates from './apis/fetchPRTemplates';
 import TemplateSelector from './components/TemplateSelector';
 import updateDom from '../shared/utils/updateDom';
 import { isCurrentPathname } from '../shared/utils/siteUtils';
+import SELECTOR from './constants/selector';
 
-const runPRTemplateScript = async () => {
-  if (!isCurrentPathname('github_pr_create')) return;
+let prevUrl = location.href;
+let initialized = false;
 
-  const prTitleInput = document.querySelector('input[name="pull_request[title]"]');
-  if (!prTitleInput) {
-    console.log('[PR 템플릿] PR 생성 화면이 아니므로 종료');
+/**
+ * 템플릿을 불러오고 셀렉터를 삽입하는 로직
+ */
+const runPRTemplateScriptCore = async () => {
+  if (initialized) {
+    console.log('[PR 템플릿] 이미 초기화됨, 실행 건너뜀');
     return;
   }
 
-  console.log('[PR 템플릿] 실행됨');
+  initialized = true;
 
-  try {
-    const { templateMap, templateNames } = await fetchPRTemplates();
-    console.log(`[PR 템플릿] 템플릿 ${templateNames.length}개 불러옴`, templateNames);
+  const { templateMap, templateNames } = await fetchPRTemplates();
 
-    updateDom({
-      action: 'insertBefore',
-      targetSelector: '.discussion-topic-header',
-      component: (
+  updateDom({
+    action: 'insertBefore',
+    targetSelector: SELECTOR.PRInsertTarget,
+    component:
+      templateNames.length > 0 ? (
         <TemplateSelector
           key={templateNames.join(',')}
           templateNames={templateNames}
           onSelect={selectedName => {
-            const textarea = document.querySelector<HTMLTextAreaElement>('textarea[name="pull_request[body]"]');
-            if (textarea) {
-              textarea.value = templateMap.get(selectedName) ?? '';
+            const textarea = document.querySelector<HTMLTextAreaElement>(SELECTOR.PRBodyTextarea);
+            const content = templateMap.get(selectedName);
+
+            if (textarea && content) {
+              textarea.value = content;
               console.log(`[PR 템플릿] "${selectedName}" 적용 완료`);
             }
           }}
         />
-      ),
-      timeoutMs: 5000,
-    });
-  } catch (err) {
-    console.error('[PR 템플릿] 불러오기 실패:', err);
-  }
+      ) : null,
+    timeoutMs: 5000,
+  });
+
+  initialized = true;
+};
+
+/**
+ * SPA 전환 대응을 위해 URL 변화 감지 기반 실행
+ */
+const runPRTemplateScript = () => {
+  setInterval(() => {
+    const isPRPage = isCurrentPathname('github_pr_create');
+    console.log('아님');
+    if (!isPRPage) return;
+
+    // URL이 바뀌었으면 초기화
+    if (location.href !== prevUrl) {
+      prevUrl = location.href;
+      initialized = false;
+    }
+
+    // PR 페이지이고 아직 초기화되지 않았다면 실행
+    if (!initialized) {
+      console.log('[PR 템플릿] PR 페이지 감지됨, 실행');
+      runPRTemplateScriptCore();
+    }
+  }, 500);
 };
 
 export default runPRTemplateScript;

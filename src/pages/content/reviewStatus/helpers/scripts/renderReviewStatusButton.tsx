@@ -1,11 +1,12 @@
 import updateDom from '../../../shared/utils/updateDom';
+import ReviewStatus from '../../components/ReviewStatus/index';
 import SELECTOR from '../../constants/selector';
 
 const renderReviewStatusButton = () => {
   updateDom({
-    action: 'append',
+    action: 'insertAfter',
     targetSelector: SELECTOR.pulls_status_group,
-    component: <div style={{ height: '20px', width: '20px', backgroundColor: 'red' }}>test</div>,
+    component: <ReviewStatus />,
     isApplyAll: true,
   });
 };

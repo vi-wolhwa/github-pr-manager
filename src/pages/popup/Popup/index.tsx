@@ -10,12 +10,13 @@ import userStorage from '@root/src/shared/storages/userStorage';
 import UserCode from './components/UserCode';
 
 import { Button, Heading, Text, Flash, Stack } from '@primer/react';
-import PRTemplateSettingContainer from './containers/PRTemplateSetting';
+import PRTemplateSettingContainer from './containers/PRTitleAutoInsert';
 import { TABS } from './constants/tabs';
 import { UnderlinePanels } from '@primer/react/experimental';
 import Home from './containers/Home';
 import PRTemplate from './containers/PRTemplate';
 import Settings from './containers/Settings';
+import PRTitleAutoInsertContainer from './containers/PRTitleAutoInsert';
 
 const cx = classNames.bind(styles);
 
@@ -125,7 +126,7 @@ const Popup = () => {
             </UnderlinePanels.Panel>
             {/* 제목 자동삽입 */}
             <UnderlinePanels.Panel>
-              <PRTemplateSettingContainer />
+              <PRTitleAutoInsertContainer />
             </UnderlinePanels.Panel>
             {/* PR 템플릿 */}
             <UnderlinePanels.Panel>

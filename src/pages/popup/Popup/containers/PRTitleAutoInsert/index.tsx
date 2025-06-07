@@ -5,7 +5,7 @@ import useStorage from '@root/src/shared/hooks/useStorage';
 /**
  * PR 템플릿 설정 컨테이너
  */
-const PRTemplateSettingContainer = () => {
+const PRTitleAutoInsertContainer = () => {
   const serviceList = useStorage(serviceListStorage);
 
   const addService = (service: Service) => {
@@ -30,4 +30,4 @@ const PRTemplateSettingContainer = () => {
   );
 };
 
-export default PRTemplateSettingContainer;
+export default PRTitleAutoInsertContainer;

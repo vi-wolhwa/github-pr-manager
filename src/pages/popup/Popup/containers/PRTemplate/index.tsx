@@ -1,5 +1,5 @@
-const PRTemplate = () => {
+const PRTemplateContainer = () => {
   return <div>PRTemplate</div>;
 };
 
-export default PRTemplate;
+export default PRTemplateContainer;

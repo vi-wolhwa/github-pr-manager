@@ -41,20 +41,18 @@ const addPRMarkdownButtons = () => {
   // 표 추가 버튼 생성
   const tableButtonContainer = document.createElement('div');
   tableButtonContainer.setAttribute('data-targets', 'action-bar.items');
-  tableButtonContainer.setAttribute('data-view-component', 'true');
   tableButtonContainer.className = 'ActionBar-item';
   tableButtonContainer.style.visibility = 'visible';
 
   const tableButton = document.createElement('button');
   tableButton.id = 'table-button';
   tableButton.className = 'Button Button--iconOnly Button--invisible Button--medium';
-  tableButton.setAttribute('type', 'button');
-  tableButton.setAttribute('data-view-component', 'true');
-  tableButton.setAttribute('tabindex', '-1');
+  tableButton.type = 'button';
+  tableButton.tabIndex = -1;
 
   // 표 버튼 아이콘
   tableButton.innerHTML = `
-    <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-table Button-visual">
+    <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" class="octicon octicon-table Button-visual">
       <path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v12.5A1.75 1.75 0 0 1 14.25 16H1.75A1.75 1.75 0 0 1 0 14.25ZM1.5 6.5v7.75c0 .138.112.25.25.25H5v-8Zm5 0v8h3.5v-8Zm5 0v8h2.75a.25.25 0 0 0 .25-.25V6.5Zm3.5-4.75a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25V5h14Z"></path>
     </svg>
   `;
@@ -64,13 +62,12 @@ const addPRMarkdownButtons = () => {
   const tableTooltipId = `tooltip-table-${Date.now()}`;
   tableTooltip.id = tableTooltipId;
   tableTooltip.setAttribute('for', 'table-button');
-  tableTooltip.setAttribute('popover', 'manual');
   tableTooltip.setAttribute('data-direction', 's');
   tableTooltip.setAttribute('data-type', 'label');
-  tableTooltip.setAttribute('data-view-component', 'true');
+  tableTooltip.setAttribute('popover', 'manual');
   tableTooltip.className = 'position-absolute sr-only';
   tableTooltip.setAttribute('aria-hidden', 'true');
-  tableTooltip.setAttribute('role', 'tooltip');
+  tableTooltip.role = 'tooltip';
   tableTooltip.textContent = '표 추가';
 
   tableButton.setAttribute('aria-labelledby', tableTooltipId);
@@ -78,19 +75,17 @@ const addPRMarkdownButtons = () => {
   // 토글 버튼 생성
   const toggleButtonContainer = document.createElement('div');
   toggleButtonContainer.setAttribute('data-targets', 'action-bar.items');
-  toggleButtonContainer.setAttribute('data-view-component', 'true');
   toggleButtonContainer.className = 'ActionBar-item';
   toggleButtonContainer.style.visibility = 'visible';
 
   const toggleButton = document.createElement('button');
   toggleButton.id = 'toggle-button';
   toggleButton.className = 'Button Button--iconOnly Button--invisible Button--medium';
-  toggleButton.setAttribute('type', 'button');
-  toggleButton.setAttribute('data-view-component', 'true');
-  toggleButton.setAttribute('tabindex', '-1');
+  toggleButton.type = 'button';
+  toggleButton.tabIndex = -1;
 
   toggleButton.innerHTML = `
-    <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-chevron-down Button-visual">
+    <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" class="octicon octicon-chevron-down Button-visual">
       <path d="M12.78 5.22a.749.749 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.06 0L3.22 6.28a.749.749 0 1 1 1.06-1.06L8 8.939l3.72-3.719a.749.749 0 0 1 1.06 0Z"></path>
     </svg>
   `;
@@ -99,13 +94,12 @@ const addPRMarkdownButtons = () => {
   const toggleTooltipId = `tooltip-toggle-${Date.now()}`;
   toggleTooltip.id = toggleTooltipId;
   toggleTooltip.setAttribute('for', 'toggle-button');
-  toggleTooltip.setAttribute('popover', 'manual');
   toggleTooltip.setAttribute('data-direction', 's');
   toggleTooltip.setAttribute('data-type', 'label');
-  toggleTooltip.setAttribute('data-view-component', 'true');
+  toggleTooltip.setAttribute('popover', 'manual');
   toggleTooltip.className = 'position-absolute sr-only';
   toggleTooltip.setAttribute('aria-hidden', 'true');
-  toggleTooltip.setAttribute('role', 'tooltip');
+  toggleTooltip.role = 'tooltip';
   toggleTooltip.textContent = '토글 추가';
 
   toggleButton.setAttribute('aria-labelledby', toggleTooltipId);

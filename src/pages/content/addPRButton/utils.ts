@@ -14,7 +14,7 @@ export const createTable = (rows: number, cols: number): string => {
   }
   table += '\n';
   // 데이터 행 생성
-  for (let i = 0; i < rows; i++) {
+  for (let i = 0; i < rows - 1; i++) {
     table += '|';
     for (let j = 0; j < cols; j++) {
       table += `  |`;
@@ -46,9 +46,7 @@ export const insertTextAtCursor = (textarea: HTMLTextAreaElement, text: string) 
 export const insertDetailsTemplate = (textarea: HTMLTextAreaElement) => {
   const template = `<details>
 <summary>제목을 입력하세요</summary>
-
-내용을 입력하세요
-
+내용을 입력하세요.
 </details>
 
 `;

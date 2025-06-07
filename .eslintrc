@@ -12,6 +12,7 @@
     "plugin:import/recommended",
     "plugin:jsx-a11y/recommended",
     "prettier",
+    "plugin:primer-react/recommended",
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {

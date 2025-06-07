@@ -15,24 +15,16 @@ const runPRTemplateScript = async () => {
   console.log('[PR 템플릿] 실행됨');
 
   try {
-    const templates = await fetchPRTemplates();
-    console.log(`[PR 템플릿] 템플릿 ${templates.length}개 불러옴`, templates);
+    const { templateMap, templateNames } = await fetchPRTemplates();
+    console.log(`[PR 템플릿] 템플릿 ${templateNames.length}개 불러옴`, templateNames);
 
-    const templateMap = new Map<string, string>();
-    const templateNames: string[] = [];
-
-    for (const file of templates) {
-      const name = file.name.replace(/\.md$/, '');
-      templateMap.set(name, file.content);
-      templateNames.push(name);
-    }
     updateDom({
       action: 'insertBefore',
       targetSelector: '.discussion-topic-header',
       component: (
         <TemplateSelector
           key={templateNames.join(',')}
-          templateNames={[...templateMap.keys()]}
+          templateNames={templateNames}
           onSelect={selectedName => {
             const textarea = document.querySelector<HTMLTextAreaElement>('textarea[name="pull_request[body]"]');
             if (textarea) {

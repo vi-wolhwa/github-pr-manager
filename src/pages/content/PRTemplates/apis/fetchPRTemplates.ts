@@ -2,23 +2,22 @@ import userStorage from '@root/src/shared/storages/userStorage';
 import { getRepoPath } from '../helpers/getRepoPath';
 import { getTemplateCache, setTemplateCache } from '../utils/templateCache';
 
-export type PRTemplateFile = {
-  name: string;
-  download_url: string;
-  content: string;
+export type PRTemplatesResult = {
+  templateMap: Map<string, string>;
+  templateNames: string[];
 };
 
-const fetchPRTemplates = async (): Promise<PRTemplateFile[]> => {
+const fetchPRTemplates = async (): Promise<PRTemplatesResult> => {
   const { access_token } = await userStorage.get();
   if (!access_token) {
     console.warn('[fetchPRTemplates] access_token이 없습니다.');
-    return [];
+    return { templateMap: new Map(), templateNames: [] };
   }
 
   const repoInfo = getRepoPath();
   if (!repoInfo) {
     console.warn('[fetchPRTemplates] owner/repo 정보를 추출할 수 없습니다.');
-    return [];
+    return { templateMap: new Map(), templateNames: [] };
   }
 
   const { owner, repo } = repoInfo;
@@ -27,11 +26,15 @@ const fetchPRTemplates = async (): Promise<PRTemplateFile[]> => {
 
   if (cachedTemplates) {
     console.log('[fetchPRTemplates] 캐시된 템플릿 반환');
-    return Object.entries(cachedTemplates).map(([name, content]) => ({
-      name: `${name}.md`,
-      download_url: '',
-      content,
-    }));
+    const templateMap = new Map<string, string>();
+    const templateNames: string[] = [];
+
+    for (const [name, content] of Object.entries(cachedTemplates)) {
+      templateMap.set(name, content);
+      templateNames.push(name);
+    }
+
+    return { templateMap, templateNames };
   }
 
   const path = '.github/PULL_REQUEST_TEMPLATE';
@@ -47,28 +50,24 @@ const fetchPRTemplates = async (): Promise<PRTemplateFile[]> => {
 
   if (!Array.isArray(json)) {
     console.warn('[fetchPRTemplates] 템플릿 파일이 배열이 아님');
-    return [];
+    return { templateMap: new Map(), templateNames: [] };
   }
 
-  const templates: PRTemplateFile[] = [];
-  const templateMap: Record<string, string> = {};
+  const templateMap = new Map<string, string>();
+  const templateNames: string[] = [];
 
   for (const file of json) {
     const res = await fetch(file.download_url);
     const content = await res.text();
     const name = file.name.replace(/\.md$/, '');
 
-    templates.push({
-      name: file.name,
-      download_url: file.download_url,
-      content,
-    });
-
-    templateMap[name] = content;
+    templateMap.set(name, content);
+    templateNames.push(name);
   }
 
-  await setTemplateCache(repoPath, templateMap, 1000 * 60 * 60 * 24); // 1일
-  return templates;
+  await setTemplateCache(repoPath, Object.fromEntries(templateMap), 1000 * 60 * 60 * 24);
+
+  return { templateMap, templateNames };
 };
 
 export default fetchPRTemplates;

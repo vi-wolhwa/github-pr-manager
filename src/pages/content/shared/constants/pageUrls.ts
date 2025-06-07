@@ -14,10 +14,7 @@ export const PAGE_URL_REGEX: Record<PageName, RegExp> = {
   github: /github\.com/,
   /**
    * github_pr_create
-   * ex) /owner/repo/compare/feat/test, /owner/repo/compare/fix/bug?expand=1
-   *
-   * - 브랜치 이름에는 /, -, _, ~, +, ^ 등 다양한 문자 포함 가능
-   * - ?expand=1 같은 쿼리스트링도 허용
+   * ex) /owner/repo/compare/feat/test, /owner/repo/compare/fix/bug?expand=1ㅇ
    */
-  github_pr_create: /^\/[^/]+\/[^/]+\/compare\/[^?]+(\?.*)?$/,
+  github_pr_create: /^\/[^/]+\/[^/]+\/compare\/.+(\?.*)?$/,
 };

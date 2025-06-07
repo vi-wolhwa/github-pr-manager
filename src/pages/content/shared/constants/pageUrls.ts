@@ -20,5 +20,5 @@ export const PAGE_URL_REGEX: Record<PageName, RegExp> = {
    * - /owner/repo/compare/main...feature?expand=1 → 쿼리 포함 PR 생성
    * - /owner/repo/pull/new/feature         → 새 브랜치에서 PR 생성
    */
-  github_pr_create: /^\/[^/]+\/[^/]+\/(compare(\/[^/]+(\.\.\.[^/]+)?)?|pull\/new\/[^/]+)(\?.*)?$/,
+  github_pr_create: /^\/[^/]+\/[^/]+\/(compare(\/.*)?|pull\/new\/[^/]+)\/?/,
 };

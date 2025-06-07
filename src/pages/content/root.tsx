@@ -1,5 +1,5 @@
 import runSampleNaverScript from './sampleNaver';
-import initializePRMarkdownButtons from './pullRequest';
+import initializePRMarkdownButtons from './addPRButton';
 
 /**
  * Content 스크립트를 실행하는 함수

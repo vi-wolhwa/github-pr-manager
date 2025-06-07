@@ -17,7 +17,9 @@ function initReloadServer() {
 
     ws.addEventListener('close', () => clientsThatNeedToUpdate.delete(ws));
     ws.addEventListener('message', event => {
-      if (typeof event.data !== 'string') return;
+      if (typeof event.data !== 'string') {
+        return;
+      }
 
       const message = MessageInterpreter.receive(event.data);
 

@@ -1,5 +1,5 @@
 import runSampleNaverScript from './sampleNaver';
-import runGitHubScript from './github';
+import initializePRMarkdownButtons from './pullRequest';
 
 /**
  * Content 스크립트를 실행하는 함수
@@ -7,7 +7,7 @@ import runGitHubScript from './github';
  */
 const runContentScripts = () => {
   runSampleNaverScript();
-  runGitHubScript();
+  initializePRMarkdownButtons();
 };
 
 /*

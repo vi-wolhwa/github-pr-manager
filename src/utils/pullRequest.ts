@@ -1,4 +1,118 @@
-// github PR 페이지 확인 함수
+/**
+ * 테이블 생성 함수
+ */
+const createTable = (rows: number, cols: number): string => {
+  const headerRow = '|' + ' Header '.repeat(cols) + '|\n';
+  const separatorRow = '|' + ' :--- '.repeat(cols) + '|\n';
+  const dataRows = Array(rows)
+    .fill('|' + ' Data '.repeat(cols) + '|\n')
+    .join('');
+
+  return headerRow + separatorRow + dataRows;
+};
+
+/**
+ * 텍스트를 커서 위치에 삽입하는 함수
+ */
+const insertTextAtCursor = (textarea: HTMLTextAreaElement, text: string) => {
+  const startPos = textarea.selectionStart;
+  const endPos = textarea.selectionEnd;
+  const textBefore = textarea.value.substring(0, startPos);
+  const textAfter = textarea.value.substring(endPos);
+
+  textarea.value = textBefore + text + textAfter;
+  textarea.selectionStart = startPos + text.length;
+  textarea.selectionEnd = startPos + text.length;
+  textarea.focus();
+};
+
+/**
+ * 토글(details) 템플릿 삽입 함수
+ */
+const insertDetailsTemplate = (textarea: HTMLTextAreaElement) => {
+  const template = `<details>
+<summary>제목을 입력하세요</summary>
+
+내용을 입력하세요
+
+</details>
+
+`;
+  insertTextAtCursor(textarea, template);
+};
+
+/**
+ * 플로팅 입력 UI 생성 함수
+ */
+const createFloatingInput = (buttonRect: DOMRect, callback: (rows: number, cols: number) => void) => {
+  const container = document.createElement('div');
+  container.style.position = 'absolute';
+  container.style.left = `${buttonRect.left}px`;
+  container.style.top = `${buttonRect.bottom + 5}px`;
+  container.style.backgroundColor = 'white';
+  container.style.border = '1px solid #d0d7de';
+  container.style.borderRadius = '6px';
+  container.style.padding = '8px';
+  container.style.zIndex = '100';
+  container.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.12)';
+
+  const form = document.createElement('form');
+  form.style.display = 'flex';
+  form.style.flexDirection = 'column';
+  form.style.gap = '8px';
+
+  const rowInput = document.createElement('input');
+  rowInput.type = 'number';
+  rowInput.min = '1';
+  rowInput.value = '3';
+  rowInput.placeholder = '행 수';
+  rowInput.style.width = '100px';
+
+  const colInput = document.createElement('input');
+  colInput.type = 'number';
+  colInput.min = '1';
+  colInput.value = '3';
+  colInput.placeholder = '열 수';
+  colInput.style.width = '100px';
+
+  const submitButton = document.createElement('button');
+  submitButton.textContent = '표 생성';
+  submitButton.type = 'submit';
+  submitButton.className = 'btn btn-sm';
+
+  form.appendChild(rowInput);
+  form.appendChild(colInput);
+  form.appendChild(submitButton);
+  container.appendChild(form);
+
+  const handleSubmit = (e: Event) => {
+    e.preventDefault();
+    const rows = parseInt(rowInput.value, 10);
+    const cols = parseInt(colInput.value, 10);
+    if (rows > 0 && cols > 0) {
+      callback(rows, cols);
+      container.remove();
+    }
+  };
+
+  form.addEventListener('submit', handleSubmit);
+
+  // 외부 클릭 시 닫기
+  const handleClickOutside = (e: MouseEvent) => {
+    if (!container.contains(e.target as Node)) {
+      container.remove();
+      document.removeEventListener('click', handleClickOutside);
+    }
+  };
+
+  setTimeout(() => {
+    document.addEventListener('click', handleClickOutside);
+  }, 0);
+
+  return container;
+};
+
+// PR 페이지 확인 함수
 export const isGitHubPRPage = () => {
   // github.com 도메인 체크
   if (!location.hostname.includes('github.com')) {
@@ -19,168 +133,7 @@ export const isGitHubPRPage = () => {
   return true;
 };
 
-// 표 생성 함수
-const createTable = (rows: number, cols: number): string => {
-  let table = '|';
-  // 헤더 생성
-  for (let i = 0; i < cols; i++) {
-    table += ` Column ${i + 1} |`;
-  }
-  table += '\n|';
-  // 구분선 생성
-  for (let i = 0; i < cols; i++) {
-    table += ' --- |';
-  }
-  table += '\n';
-  // 데이터 행 생성
-  for (let i = 0; i < rows; i++) {
-    table += '|';
-    for (let j = 0; j < cols; j++) {
-      table += `  |`;
-    }
-    table += '\n';
-  }
-
-  return table;
-};
-
-// 플로팅 입력창 생성 함수
-const createFloatingInput = (buttonRect: DOMRect, onSubmit: (rows: number, cols: number) => void) => {
-  // 이미 존재하는 플로팅 입력창 제거
-  const existingFloat = document.querySelector('.table-size-float');
-  if (existingFloat) {
-    existingFloat.remove();
-  }
-
-  // 플로팅 컨테이너 생성
-  const floatContainer = document.createElement('div');
-  floatContainer.className = 'table-size-float';
-  floatContainer.style.cssText = `
-    position: absolute;
-    top: ${buttonRect.bottom + 4}px;
-    left: ${buttonRect.left}px;
-    background-color: var(--color-canvas-overlay);
-    border: 1px solid var(--color-border-default);
-    border-radius: 6px;
-    padding: 8px;
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    z-index: 100;
-    box-shadow: var(--color-shadow-medium);
-  `;
-
-  // 행 입력
-  const rowsInput = document.createElement('input');
-  rowsInput.type = 'number';
-  rowsInput.min = '1';
-  rowsInput.value = '3';
-  rowsInput.className = 'form-control';
-  rowsInput.style.cssText = 'width: 60px; height: 28px;';
-
-  // 열 입력
-  const colsInput = document.createElement('input');
-  colsInput.type = 'number';
-  colsInput.min = '1';
-  colsInput.value = '3';
-  colsInput.className = 'form-control';
-  colsInput.style.cssText = 'width: 60px; height: 28px;';
-
-  // 추가 버튼
-  const addButton = document.createElement('button');
-  addButton.className = 'btn btn-sm btn-primary';
-  addButton.textContent = '추가';
-  addButton.style.marginLeft = '4px';
-
-  // 레이블과 입력 필드를 포함할 컨테이너들
-  const rowContainer = document.createElement('div');
-  rowContainer.style.display = 'flex';
-  rowContainer.style.alignItems = 'center';
-  rowContainer.style.gap = '4px';
-  const rowLabel = document.createElement('span');
-  rowLabel.textContent = '행';
-  rowLabel.style.color = 'var(--color-fg-default)';
-
-  const colContainer = document.createElement('div');
-  colContainer.style.display = 'flex';
-  colContainer.style.alignItems = 'center';
-  colContainer.style.gap = '4px';
-  const colLabel = document.createElement('span');
-  colLabel.textContent = '열';
-  colLabel.style.color = 'var(--color-fg-default)';
-
-  // 구성 요소 조립
-  rowContainer.appendChild(rowLabel);
-  rowContainer.appendChild(rowsInput);
-  colContainer.appendChild(colLabel);
-  colContainer.appendChild(colsInput);
-
-  floatContainer.appendChild(rowContainer);
-  floatContainer.appendChild(colContainer);
-  floatContainer.appendChild(addButton);
-
-  // 이벤트 리스너
-  addButton.addEventListener('click', () => {
-    const rows = parseInt(rowsInput.value, 10);
-    const cols = parseInt(colsInput.value, 10);
-    if (rows > 0 && cols > 0) {
-      onSubmit(rows, cols);
-      floatContainer.remove();
-    }
-  });
-
-  // ESC 키로 닫기
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
-      floatContainer.remove();
-    }
-  });
-
-  // 외부 클릭 시 닫기
-  document.addEventListener('click', e => {
-    if (!floatContainer.contains(e.target as Node) && !(e.target as Element).closest('#table-button')) {
-      floatContainer.remove();
-    }
-  });
-
-  return floatContainer;
-};
-
-// 텍스트 에어리어에 문자열 삽입 함수
-const insertTextAtCursor = (textarea: HTMLTextAreaElement, text: string) => {
-  const startPos = textarea.selectionStart;
-  const endPos = textarea.selectionEnd;
-  const before = textarea.value.substring(0, startPos);
-  const after = textarea.value.substring(endPos);
-
-  // 문자열 삽입
-  textarea.value = before + text + after;
-
-  // 커서 위치 조정 (삽입된 텍스트 뒤로)
-  const newCursorPos = startPos + text.length;
-  textarea.selectionStart = newCursorPos;
-  textarea.selectionEnd = newCursorPos;
-
-  // 텍스트 에어리어에 포커스 주기
-  textarea.focus();
-
-  // 변경 이벤트 발생시키기
-  const event = new Event('input', { bubbles: true });
-  textarea.dispatchEvent(event);
-};
-
-// details 템플릿 삽입 함수
-const insertDetailsTemplate = (textarea: HTMLTextAreaElement) => {
-  const template = `<details>
-<summary>제목 접기/펼치기</summary>
-내용 블라블라
-</details>
-
-`;
-  insertTextAtCursor(textarea, template);
-};
-
-export const addTestButton = () => {
+export const addPRMarkdownButtons = () => {
   // 헤딩 버튼 찾기
   const headingButton = document.querySelector('[data-md-button="header-3"]');
   if (!headingButton) {
@@ -229,7 +182,7 @@ export const addTestButton = () => {
 
   tableButton.setAttribute('aria-labelledby', tableTooltipId);
 
-  // 토글 버튼 생성 (기존 코드를 수정)
+  // 토글 버튼 생성
   const toggleButtonContainer = document.createElement('div');
   toggleButtonContainer.setAttribute('data-targets', 'action-bar.items');
   toggleButtonContainer.setAttribute('data-view-component', 'true');

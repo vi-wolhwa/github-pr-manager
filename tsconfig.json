@@ -25,5 +25,5 @@
       "virtual:reload-on-update-in-view": ["./src/global.d.ts"]
     }
   },
-  "include": ["src", "utils", "vite.config.ts", "node_modules/@types/chrome"]
+  "include": ["src", "utils", "vite.config.ts", "node_modules/@types/chrome", "node_modules/@primer"]
 }

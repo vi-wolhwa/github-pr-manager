@@ -102,19 +102,6 @@ const Popup = () => {
             GitHub 계정이 정상적으로 등록되었습니다. 확장 프로그램의 기능을 자유롭게 활용하실 수 있어요.
           </Text>
 
-          {/* 확장 해제 버튼 */}
-          <Button
-            variant="invisible"
-            size="small"
-            sx={{ color: 'danger.fg', mt: 2 }}
-            onClick={() => {
-              if (confirm('정말로 확장 프로그램 인증을 해제하시겠습니까?')) {
-                userStorage.set(null);
-                location.reload();
-              }
-            }}>
-            확장 프로그램 인증 해제하기
-          </Button>
           <UnderlinePanels>
             {tabList.map(tab => (
               <UnderlinePanels.Tab key={tab}>{tab}</UnderlinePanels.Tab>

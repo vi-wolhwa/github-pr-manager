@@ -11,7 +11,7 @@ import { getPullNumberFromHref } from './utils/getPullNumberFromHref';
  * - 각 PR 항목에서 pull number, 상태영역, 링크 등 주요 요소 추출
  * - 각 PR 항목에 리뷰 상태 컴포넌트를 삽입
  */
-const runPREditorPreviewScript = async () => {
+const runPrReviewStatusScript = async () => {
   /* 1. Pulls(목록) 페이지가 아니면 실행하지 않음 */
   if (!isCurrentPage('pulls')) {
     return;
@@ -47,4 +47,4 @@ const runPREditorPreviewScript = async () => {
   });
 };
 
-export default runPREditorPreviewScript;
+export default runPrReviewStatusScript;

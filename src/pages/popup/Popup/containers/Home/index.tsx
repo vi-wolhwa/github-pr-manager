@@ -1,5 +1,10 @@
+import PanelWrapper from '../../components/PanelWrapper';
+
+/**
+ * 홈 탭 컨테이너
+ */
 const HomeContainer = () => {
-  return <div>Home</div>;
+  return <PanelWrapper>Home</PanelWrapper>;
 };
 
 export default HomeContainer;

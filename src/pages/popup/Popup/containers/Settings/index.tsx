@@ -1,9 +1,13 @@
 import { Button } from '@primer/react';
 import userStorage from '@root/src/shared/storages/userStorage';
+import PanelWrapper from '../../components/PanelWrapper';
 
+/**
+ * 세팅 탭 컨테이너
+ */
 const SettingsContainer = () => {
   return (
-    <div>
+    <PanelWrapper>
       {/* 확장 해제 버튼 */}
       <Button
         variant="invisible"
@@ -17,7 +21,7 @@ const SettingsContainer = () => {
         }}>
         확장 프로그램 인증 해제하기
       </Button>
-    </div>
+    </PanelWrapper>
   );
 };
 

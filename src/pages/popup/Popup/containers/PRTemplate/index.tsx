@@ -1,5 +1,10 @@
+import PanelWrapper from '../../components/PanelWrapper';
+
+/**
+ * PR 템플릿 탭 컨테이너
+ */
 const PRTemplateContainer = () => {
-  return <div>PRTemplate</div>;
+  return <PanelWrapper>PRTemplate</PanelWrapper>;
 };
 
 export default PRTemplateContainer;

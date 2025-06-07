@@ -1,14 +1,20 @@
 // github PR 페이지 확인 함수
 export const isGitHubPRPage = () => {
   // github.com 도메인 체크
-  if (!location.hostname.includes('github.com')) return false;
+  if (!location.hostname.includes('github.com')) {
+    return false;
+  }
 
   // compare 페이지 체크
-  if (!location.pathname.includes('/compare/')) return false;
+  if (!location.pathname.includes('/compare/')) {
+    return false;
+  }
 
   // PR 헤더 체크
   const prHeader = document.querySelector('.compare-pr-header .Subhead-heading');
-  if (!prHeader || !prHeader.textContent?.includes('Open a pull request')) return false;
+  if (!prHeader || !prHeader.textContent?.includes('Open a pull request')) {
+    return false;
+  }
 
   return true;
 };
@@ -34,6 +40,7 @@ const createTable = (rows: number, cols: number): string => {
     }
     table += '\n';
   }
+
   return table;
 };
 
@@ -176,10 +183,14 @@ const insertDetailsTemplate = (textarea: HTMLTextAreaElement) => {
 export const addTestButton = () => {
   // 헤딩 버튼 찾기
   const headingButton = document.querySelector('[data-md-button="header-3"]');
-  if (!headingButton) return;
+  if (!headingButton) {
+    return;
+  }
 
   // 이미 추가된 버튼들이 있는지 확인
-  if (document.querySelector('#table-button') || document.querySelector('#toggle-button')) return;
+  if (document.querySelector('#table-button') || document.querySelector('#toggle-button')) {
+    return;
+  }
 
   // 표 추가 버튼 생성
   const tableButtonContainer = document.createElement('div');
@@ -258,6 +269,7 @@ export const addTestButton = () => {
     const textarea = document.querySelector('#pull_request_body') as HTMLTextAreaElement;
     if (!textarea) {
       alert('PR 설명 입력 필드를 찾을 수 없습니다.');
+
       return;
     }
 
@@ -274,6 +286,7 @@ export const addTestButton = () => {
     const textarea = document.querySelector('#pull_request_body') as HTMLTextAreaElement;
     if (!textarea) {
       alert('PR 설명 입력 필드를 찾을 수 없습니다.');
+
       return;
     }
 

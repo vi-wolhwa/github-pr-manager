@@ -1,4 +1,5 @@
 import runSampleNaverScript from './sampleNaver';
+import runGitHubScript from './github';
 
 /**
  * Content 스크립트를 실행하는 함수
@@ -6,6 +7,7 @@ import runSampleNaverScript from './sampleNaver';
  */
 const runContentScripts = () => {
   runSampleNaverScript();
+  runGitHubScript();
 };
 
 /*

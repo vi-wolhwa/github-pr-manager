@@ -1,6 +1,6 @@
 import serviceListStorage, { Service } from '@root/src/shared/storages/serviceListStorage';
-import PRTemplateSetting from '../../components/PRTemplateSetting';
 import useStorage from '@root/src/shared/hooks/useStorage';
+import PRTitles from '../../components/PRTitles';
 
 /**
  * PR 템플릿 설정 컨테이너
@@ -23,10 +23,10 @@ const PRTitleAutoInsertContainer = () => {
   };
 
   return (
-    <PRTemplateSetting.Wrapper>
-      <PRTemplateSetting.TemplateInput addService={addService} />
-      <PRTemplateSetting.ServiceList serviceList={serviceList} removeService={removeService} />
-    </PRTemplateSetting.Wrapper>
+    <PRTitles.Wrapper>
+      <PRTitles.TemplateInput addService={addService} />
+      <PRTitles.ServiceList serviceList={serviceList} removeService={removeService} />
+    </PRTitles.Wrapper>
   );
 };
 

@@ -2431,6 +2431,7 @@ __metadata:
     classnames: 2.5.1
     construct-style-sheets-polyfill: 3.1.0
     cross-env: 7.0.3
+    date-fns: ^4.1.0
     eslint: 8.56.0
     eslint-config-airbnb-typescript: 17.1.0
     eslint-config-prettier: 9.0.0
@@ -2766,6 +2767,13 @@ __metadata:
     es-errors: "npm:^1.3.0"
     is-data-view: "npm:^1.0.1"
   checksum: 8dd492cd51d19970876626b5b5169fbb67ca31ec1d1d3238ee6a71820ca8b80cafb141c485999db1ee1ef02f2cc3b99424c5eda8d59e852d9ebb79ab290eb5ee
+  languageName: node
+  linkType: hard
+
+"date-fns@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "date-fns@npm:4.1.0"
+  checksum: fb681b242cccabed45494468f64282a7d375ea970e0adbcc5dcc92dcb7aba49b2081c2c9739d41bf71ce89ed68dd73bebfe06ca35129490704775d091895710b
   languageName: node
   linkType: hard
 

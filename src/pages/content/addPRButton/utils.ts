@@ -2,13 +2,27 @@
  * 테이블 생성 함수
  */
 export const createTable = (rows: number, cols: number): string => {
-  const headerRow = '|' + ' Header '.repeat(cols) + '|\n';
-  const separatorRow = '|' + ' :--- '.repeat(cols) + '|\n';
-  const dataRows = Array(rows)
-    .fill('|' + ' Data '.repeat(cols) + '|\n')
-    .join('');
+  let table = '|';
+  // 헤더 생성
+  for (let i = 0; i < cols; i++) {
+    table += ` Column ${i + 1} |`;
+  }
+  table += '\n|';
+  // 구분선 생성
+  for (let i = 0; i < cols; i++) {
+    table += ' --- |';
+  }
+  table += '\n';
+  // 데이터 행 생성
+  for (let i = 0; i < rows; i++) {
+    table += '|';
+    for (let j = 0; j < cols; j++) {
+      table += `  |`;
+    }
+    table += '\n';
+  }
 
-  return headerRow + separatorRow + dataRows;
+  return table;
 };
 
 /**
@@ -52,12 +66,12 @@ export const createFloatingInput = (button: HTMLElement, callback: (rows: number
   container.style.position = 'absolute';
   container.style.left = `${buttonRect.left}px`;
   container.style.top = `${buttonRect.bottom + scrollTop}px`;
-  container.style.backgroundColor = 'var(--color-canvas-default, #ffffff)';
-  container.style.border = '1px solid var(--color-border-default, #d0d7de)';
+  container.style.backgroundColor = 'var(--bgColor-default)';
+  container.style.border = '1px solid var(--borderColor-default)';
   container.style.borderRadius = '6px';
   container.style.padding = '8px';
   container.style.zIndex = '100';
-  container.style.boxShadow = 'var(--color-shadow-medium, 0 1px 3px rgba(0, 0, 0, 0.12))';
+  container.style.boxShadow = 'var(--shadow-floating)';
 
   const form = document.createElement('form');
   form.style.display = 'flex';
@@ -67,7 +81,7 @@ export const createFloatingInput = (button: HTMLElement, callback: (rows: number
   // 행 입력 레이블과 입력창
   const rowLabel = document.createElement('label');
   rowLabel.textContent = '행';
-  rowLabel.style.color = 'var(--color-fg-default)';
+  rowLabel.style.color = 'var(--fgColor-default)';
 
   const rowInput = document.createElement('input');
   rowInput.type = 'number';
@@ -75,15 +89,15 @@ export const createFloatingInput = (button: HTMLElement, callback: (rows: number
   rowInput.value = '3';
   rowInput.style.width = '50px';
   rowInput.style.padding = '3px 8px';
-  rowInput.style.border = '1px solid var(--color-border-default, #d0d7de)';
+  rowInput.style.border = '1px solid var(--borderColor-default)';
   rowInput.style.borderRadius = '6px';
-  rowInput.style.backgroundColor = 'var(--color-canvas-default)';
-  rowInput.style.color = 'var(--color-fg-default)';
+  rowInput.style.backgroundColor = 'var(--bgColor-inset)';
+  rowInput.style.color = 'var(--fgColor-default)';
 
   // 열 입력 레이블과 입력창
   const colLabel = document.createElement('label');
   colLabel.textContent = '열';
-  colLabel.style.color = 'var(--color-fg-default)';
+  colLabel.style.color = 'var(--fgColor-default)';
 
   const colInput = document.createElement('input');
   colInput.type = 'number';
@@ -91,10 +105,10 @@ export const createFloatingInput = (button: HTMLElement, callback: (rows: number
   colInput.value = '3';
   colInput.style.width = '50px';
   colInput.style.padding = '3px 8px';
-  colInput.style.border = '1px solid var(--color-border-default, #d0d7de)';
+  colInput.style.border = '1px solid var(--borderColor-default)';
   colInput.style.borderRadius = '6px';
-  colInput.style.backgroundColor = 'var(--color-canvas-default)';
-  colInput.style.color = 'var(--color-fg-default)';
+  colInput.style.backgroundColor = 'var(--bgColor-inset)';
+  colInput.style.color = 'var(--fgColor-default)';
 
   const submitButton = document.createElement('button');
   submitButton.textContent = '확인';

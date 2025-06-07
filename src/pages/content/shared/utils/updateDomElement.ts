@@ -55,6 +55,10 @@ const updateDomClassOrStyle = ({
 
     /* 대상 요소가 없다면 대기 */
     if (!target) {
+      if (targetSelector === 'mount-github-pr-manager-editor-content-custom-preview') {
+        console.log('대기중');
+      }
+
       return;
     }
 

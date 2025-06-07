@@ -45,6 +45,7 @@ const wrapEditorContentElement = async () => {
     action: 'append',
     targetSelector: `#${COMPONENT_ID.EditorContentContainer}`,
     component: <EditorContentCustomPreview />,
+    componentId: COMPONENT_ID.EditorContentCustomPreview,
   });
 };
 

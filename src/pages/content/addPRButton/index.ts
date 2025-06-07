@@ -15,14 +15,14 @@ const isGitHubPRPage = () => {
     return false;
   }
 
-  // PR 에디터 체크 - CommentBox 또는 기본 에디터
+  // 에디터 툴바 존재 여부 확인
   const hasEditor = document.querySelector('markdown-toolbar.CommentBox-toolbar');
 
   return !!hasEditor;
 };
 
 /**
- * 단일 toolbar에 마크다운 편집 버튼을 추가하는 함수
+ * toolbar에 표, 더보기 버튼을 추가하는 함수
  */
 const addButtonsToToolbar = (toolbar: Element) => {
   const forAttribute = toolbar.getAttribute('for');
@@ -87,9 +87,11 @@ const addButtonsToToolbar = (toolbar: Element) => {
   toggleButton.type = 'button';
   toggleButton.tabIndex = -1;
 
+  // 토글 버튼 아이콘
+  // TODO: 추후 ui에 전체적으로 primer 적용 필요
   toggleButton.innerHTML = `
-    <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" class="octicon octicon-chevron-down Button-visual">
-      <path d="M12.78 5.22a.749.749 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.06 0L3.22 6.28a.749.749 0 1 1 1.06-1.06L8 8.939l3.72-3.719a.749.749 0 0 1 1.06 0Z"></path>
+    <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" class="octicon octicon-triangle-right Button-visual">
+      <path d="m6.427 4.427 3.396 3.396a.25.25 0 0 1 0 .354l-3.396 3.396A.25.25 0 0 1 6 11.396V4.604a.25.25 0 0 1 .427-.177Z"></path>
     </svg>
   `;
 
@@ -151,7 +153,7 @@ const addButtonsToToolbar = (toolbar: Element) => {
 };
 
 /**
- * PR 페이지에 마크다운 편집 버튼을 추가하는 함수
+ * PR 페이지에 버튼을 추가하는 함수
  */
 const addPRMarkdownButtons = () => {
   // 모든 markdown-toolbar를 찾아서 각각에 버튼 추가
@@ -160,7 +162,7 @@ const addPRMarkdownButtons = () => {
 };
 
 /**
- * GitHub PR 페이지에서 마크다운 편집 버튼을 추가하는 스크립트
+ * GitHub PR 페이지에서 버튼을 추가
  */
 const initializePRMarkdownButtons = () => {
   if (!isGitHubPRPage()) {

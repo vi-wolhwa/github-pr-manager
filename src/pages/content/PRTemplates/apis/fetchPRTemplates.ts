@@ -3,7 +3,9 @@ import { getRepoPath } from '../helpers/getRepoPath';
 import { getTemplateCache, setTemplateCache } from '../utils/templateCache';
 
 export type PRTemplatesResult = {
+  /** 템플릿 이름 ↔ 내용 매핑 */
   templateMap: Map<string, string>;
+  /** 템플릿 이름 목록 */
   templateNames: string[];
 };
 
@@ -22,6 +24,8 @@ const fetchPRTemplates = async (): Promise<PRTemplatesResult> => {
 
   const { owner, repo } = repoInfo;
   const repoPath = `${owner}/${repo}`;
+
+  /** 캐시된 템플릿 가져오기 */
   const cachedTemplates = await getTemplateCache(repoPath);
 
   if (cachedTemplates) {
@@ -57,6 +61,13 @@ const fetchPRTemplates = async (): Promise<PRTemplatesResult> => {
   const templateNames: string[] = [];
 
   for (const file of json) {
+    /**
+     * file: {
+     *   name: "투자서비스_FEAT.md",         // 템플릿 이름 (확장자 포함)
+     *   download_url: "...",                // 템플릿 원본 내용에 직접 접근할 수 있는 URL
+     *   ... 기타 필드는 사용하지 않음
+     * }
+     */
     const res = await fetch(file.download_url);
     const content = await res.text();
     const name = file.name.replace(/\.md$/, '');
@@ -65,7 +76,8 @@ const fetchPRTemplates = async (): Promise<PRTemplatesResult> => {
     templateNames.push(name);
   }
 
-  await setTemplateCache(repoPath, Object.fromEntries(templateMap), 1000 * 60 * 60 * 24);
+  /** 캐시 저장 (유효 기간: 30일) */
+  await setTemplateCache(repoPath, Object.fromEntries(templateMap), 1000 * 60 * 60 * 24 * 30);
 
   return { templateMap, templateNames };
 };

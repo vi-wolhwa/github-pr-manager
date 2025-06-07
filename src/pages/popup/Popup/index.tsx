@@ -10,6 +10,7 @@ import userStorage from '@root/src/shared/storages/userStorage';
 import UserCode from './components/UserCode';
 
 import { Button, Heading, Text, Flash, Stack } from '@primer/react';
+import { clearTemplateCache } from '../../content/PRTemplates/utils/templateCache';
 
 const cx = classNames.bind(styles);
 
@@ -38,6 +39,18 @@ const Popup = () => {
   const onClickMoveRegisterPage = () => {
     const { verification_uri } = deviceInfo;
     window.open(verification_uri, '_blank');
+  };
+
+  const onClickRefreshInfo = async () => {
+    await clearTemplateCache();
+    location.reload();
+
+    // 현재 탭(GitHub PR 페이지) 새로고침
+    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+      if (tabs[0].id) {
+        chrome.tabs.reload(tabs[0].id);
+      }
+    });
   };
 
   return (
@@ -93,6 +106,15 @@ const Popup = () => {
           <Text as="p" sx={{ fontSize: 1, color: 'fg.muted' }}>
             GitHub 계정이 정상적으로 등록되었습니다. 확장 프로그램의 기능을 자유롭게 활용하실 수 있어요.
           </Text>
+
+          {/* 템플릿 캐시 초기화 */}
+          <Text as="p" sx={{ fontSize: 1, color: 'fg.subtle', mt: 3 }}>
+            PR 템플릿을 수정한 뒤에도 변경 내용이 보이지 않나요? <br />
+            아래 버튼을 눌러 캐시를 초기화하면 최신 템플릿이 즉시 반영됩니다.
+          </Text>
+          <Button variant="invisible" size="small" onClick={onClickRefreshInfo}>
+            정보 새로고침
+          </Button>
 
           {/* 확장 해제 버튼 */}
           <Button

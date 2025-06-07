@@ -39,19 +39,16 @@ export const getTemplateCache = async (repoPath: string): Promise<Record<string,
       const cache = result[key] as TemplateCache | undefined;
 
       if (!cache) {
-        console.log(`[templateCache] 캐시 없음 (${repoPath})`);
         resolve(null);
         return;
       }
 
       if (Date.now() > cache.expiresAt) {
-        console.log(`[templateCache] 캐시 만료됨 (${repoPath})`);
         chrome.storage.local.remove(key);
         resolve(null);
         return;
       }
 
-      console.log(`[templateCache] 캐시 사용 (${repoPath})`);
       resolve(cache.templates);
     });
   });

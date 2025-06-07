@@ -11,14 +11,12 @@ let initialized = false;
  * 템플릿을 불러오고 셀렉터를 삽입하는 로직
  */
 const runPRTemplateScriptCore = async () => {
-  const prTitleInput = document.querySelector(SELECTOR.PRTitleInput);
-  if (!prTitleInput) {
-    console.log('[PR 템플릿] 제목 입력 필드 없음, DOM 대기 중...');
+  if (initialized) {
     return;
   }
 
-  if (initialized) {
-    console.log('[PR 템플릿] 이미 초기화됨, 실행 건너뜀');
+  const prTitleInput = document.querySelector(SELECTOR.PRTitleInput);
+  if (!prTitleInput) {
     return;
   }
 
@@ -40,7 +38,6 @@ const runPRTemplateScriptCore = async () => {
 
             if (textarea && content) {
               textarea.value = content;
-              console.log(`[PR 템플릿] "${selectedName}" 적용 완료`);
             }
           }}
         />
@@ -55,8 +52,10 @@ const runPRTemplateScriptCore = async () => {
 const runPRTemplateScript = () => {
   setInterval(() => {
     const isPRPage = isCurrentPathname('github_pr_create');
-    console.log('아님');
-    if (!isPRPage) return;
+
+    if (!isPRPage) {
+      return;
+    }
 
     // URL이 바뀌었으면 초기화
     if (location.href !== prevUrl) {
@@ -66,8 +65,6 @@ const runPRTemplateScript = () => {
 
     // PR 페이지이고 아직 초기화되지 않았다면 실행
     if (!initialized) {
-      initialized = true;
-      console.log('[PR 템플릿] PR 페이지 감지됨, 실행');
       runPRTemplateScriptCore();
     }
   }, 500);

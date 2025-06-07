@@ -29,7 +29,6 @@ const fetchPRTemplates = async (): Promise<PRTemplatesResult> => {
   const cachedTemplates = await getTemplateCache(repoPath);
 
   if (cachedTemplates) {
-    console.log('[fetchPRTemplates] 캐시된 템플릿 반환');
     const templateMap = new Map<string, string>();
     const templateNames: string[] = [];
 
@@ -50,7 +49,6 @@ const fetchPRTemplates = async (): Promise<PRTemplatesResult> => {
   });
 
   const json = await res.json();
-  console.log('[fetchPRTemplates] API 응답:', json);
 
   if (!Array.isArray(json)) {
     console.warn('[fetchPRTemplates] 템플릿 파일이 배열이 아님');

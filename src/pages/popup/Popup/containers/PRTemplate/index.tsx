@@ -8,7 +8,9 @@ import { SyncIcon } from '@primer/octicons-react';
 const PRTemplateContainer = () => {
   return (
     <PanelWrapper>
-      <Button leadingVisual={SyncIcon}>템플릿 캐시 무효화</Button>
+      <Button leadingVisual={SyncIcon} size="small">
+        템플릿 캐시 무효화
+      </Button>
     </PanelWrapper>
   );
 };

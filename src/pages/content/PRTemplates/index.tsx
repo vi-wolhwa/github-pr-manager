@@ -11,6 +11,12 @@ let initialized = false;
  * 템플릿을 불러오고 셀렉터를 삽입하는 로직
  */
 const runPRTemplateScriptCore = async () => {
+  const prTitleInput = document.querySelector(SELECTOR.PRTitleInput);
+  if (!prTitleInput) {
+    console.log('[PR 템플릿] 제목 입력 필드 없음, DOM 대기 중...');
+    return;
+  }
+
   if (initialized) {
     console.log('[PR 템플릿] 이미 초기화됨, 실행 건너뜀');
     return;
@@ -41,8 +47,6 @@ const runPRTemplateScriptCore = async () => {
       ) : null,
     timeoutMs: 5000,
   });
-
-  initialized = true;
 };
 
 /**
@@ -62,6 +66,7 @@ const runPRTemplateScript = () => {
 
     // PR 페이지이고 아직 초기화되지 않았다면 실행
     if (!initialized) {
+      initialized = true;
       console.log('[PR 템플릿] PR 페이지 감지됨, 실행');
       runPRTemplateScriptCore();
     }

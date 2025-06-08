@@ -1,9 +1,10 @@
 /* ------------------------------------------------------------------ */
 /* 여기 배열에 “실행할 스크립트”를 추가만 하면 자동으로 등록된다.        */
 /* ------------------------------------------------------------------ */
+import runPRTitleAutoInsert from './prTitleAutoInsert';
 import runSampleNaverScript from './sampleNaver';
 
-const REGISTERED_SCRIPTS: Array<() => void> = [runSampleNaverScript];
+const REGISTERED_SCRIPTS: Array<() => void> = [runSampleNaverScript, runPRTitleAutoInsert];
 
 /* ------------------------------------------------------------------ */
 /* GitHub SPA 네비게이션 대응을 위한 유틸, 센티널 설정                   */
@@ -72,7 +73,7 @@ const debounceRunContentScripts = () => {
   runTimeout = setTimeout(() => {
     runContentScripts();
     runTimeout = null;
-  }, 10000);
+  }, 100);
 };
 
 /* ------------------------------------------------------------------ */

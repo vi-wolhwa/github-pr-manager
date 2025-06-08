@@ -12,5 +12,5 @@ export const PAGE_URL: Record<PageName, string> = {
 export const PAGE_URL_REGEX: Record<PageName, RegExp> = {
   naver: /naver\.com/,
   github: /github\.com/,
-  compare: /^https:\/\/github\.com\/[^/]+\/[^/]+\/compare\/[^?]+\.{3}[^?]+(?:\?.*)?$/,
+  compare: /github\.com\/[^/]+\/[^/]+\/compare\//,
 };

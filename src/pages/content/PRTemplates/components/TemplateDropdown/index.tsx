@@ -6,7 +6,7 @@ type Props = {
 /**
  * PR 템플릿 선택 셀렉트 컴포넌트
  */
-const TemplateSelector = ({ templateNames, onSelect }: Props) => {
+const TemplateDropdown = ({ templateNames, onSelect }: Props) => {
   return (
     <div className="mb-3">
       <h3 className="f4 mb-2" id="pr_template_selector_header">
@@ -29,4 +29,4 @@ const TemplateSelector = ({ templateNames, onSelect }: Props) => {
   );
 };
 
-export default TemplateSelector;
+export default TemplateDropdown;

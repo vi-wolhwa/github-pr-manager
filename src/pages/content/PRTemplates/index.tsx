@@ -1,5 +1,5 @@
 import fetchPRTemplates from './apis/fetchPRTemplates';
-import TemplateSelector from './components/TemplateSelector';
+import TemplateDropdown from './components/TemplateDropdown';
 import updateDom from '../shared/utils/updateDom';
 import { isCurrentPage } from '../shared/utils/siteUtils';
 import SELECTOR from './constants/selector';
@@ -38,7 +38,7 @@ const runPRTemplateScript = async () => {
     action: 'insertBefore',
     targetSelector: SELECTOR.PRInsertTarget,
     component: (
-      <TemplateSelector
+      <TemplateDropdown
         key={templateNames.join(',')}
         templateNames={templateNames}
         onSelect={selectedName => {

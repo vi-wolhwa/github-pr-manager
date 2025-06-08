@@ -25,11 +25,9 @@ const fetchPRTemplates = async (): Promise<PRTemplatesResult> => {
   const { owner, repo } = repoInfo;
   const repoPath = `${owner}/${repo}`;
 
-  /** 스토리지 템플릿 가져오기 */
   const storageTemplates = await getTemplateStorage(repoPath);
 
   if (storageTemplates) {
-    console.log('[fetchPRTemplates] 캐시된 템플릿 반환');
     const templateMap = new Map<string, string>();
     const templateNames: string[] = [];
 
@@ -50,7 +48,6 @@ const fetchPRTemplates = async (): Promise<PRTemplatesResult> => {
   });
 
   const json = await res.json();
-  console.log('[fetchPRTemplates] API 응답:', json);
 
   if (!Array.isArray(json)) {
     console.warn('[fetchPRTemplates] 템플릿 파일이 배열이 아님');
@@ -68,16 +65,24 @@ const fetchPRTemplates = async (): Promise<PRTemplatesResult> => {
      *   ... 기타 필드는 사용하지 않음
      * }
      */
-    const res = await fetch(file.download_url);
-    const content = await res.text();
-    const name = file.name.replace(/\.md$/, '');
+    if (!file.name.endsWith('.md')) {
+      continue;
+    }
 
-    templateMap.set(name, content);
-    templateNames.push(name);
+    try {
+      const res = await fetch(file.download_url);
+      const content = await res.text();
+      const name = file.name.replace(/\.md$/, '');
+
+      templateMap.set(name, content);
+      templateNames.push(name);
+    } catch (e) {
+      console.warn(`[fetchPRTemplates] ${file.name} 다운로드 실패`, e);
+    }
   }
 
-  /** 스토리지 저장 (유효 기간: 30일) */
-  await setTemplateStorage(repoPath, Object.fromEntries(templateMap), 1000 * 60 * 60 * 24 * 30);
+  /** 스토리지 저장 (유효 기간: 영구) */
+  await setTemplateStorage(repoPath, Object.fromEntries(templateMap), Infinity);
 
   return { templateMap, templateNames };
 };

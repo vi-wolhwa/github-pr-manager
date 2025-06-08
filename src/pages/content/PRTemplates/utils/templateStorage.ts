@@ -26,8 +26,6 @@ export const setTemplateStorage = async (
   await chrome.storage.local.set({
     [key]: { templates, expiresAt },
   });
-
-  console.log(`[templateCache] 저장 완료 (${repoPath})`);
 };
 
 /** 템플릿 스토리지 불러오기 */
@@ -39,19 +37,16 @@ export const getTemplateStorage = async (repoPath: string): Promise<Record<strin
       const storage = result[key] as TemplateStorage | undefined;
 
       if (!storage) {
-        console.log(`[templateCache] 스토리지 없음 (${repoPath})`);
         resolve(null);
         return;
       }
 
       if (Date.now() > storage.expiresAt) {
-        console.log(`[templateCache] 스토리지 만료됨 (${repoPath})`);
         chrome.storage.local.remove(key);
         resolve(null);
         return;
       }
 
-      console.log(`[templateCache] 스토리지 사용 (${repoPath})`);
       resolve(storage.templates);
     });
   });
@@ -73,8 +68,5 @@ export const clearTemplateStorage = async () => {
 
   if (templateKeys.length > 0) {
     await chrome.storage.local.remove(templateKeys);
-    console.log('[templateCache] 모든 템플릿 스토리지 제거됨');
-  } else {
-    console.log('[templateCache] 제거할 템플릿 스토리지가 없습니다.');
   }
 };

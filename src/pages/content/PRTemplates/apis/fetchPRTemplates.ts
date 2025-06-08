@@ -1,6 +1,6 @@
 import userStorage from '@root/src/shared/storages/userStorage';
 import { getRepoPath } from '../helpers/getRepoPath';
-import { getTemplateCache, setTemplateCache } from '../utils/templateCache';
+import { getTemplateStorage, setTemplateStorage } from '../utils/templateStorage';
 
 export type PRTemplatesResult = {
   /** 템플릿 이름 ↔ 내용 매핑 */
@@ -25,15 +25,15 @@ const fetchPRTemplates = async (): Promise<PRTemplatesResult> => {
   const { owner, repo } = repoInfo;
   const repoPath = `${owner}/${repo}`;
 
-  /** 캐시된 템플릿 가져오기 */
-  const cachedTemplates = await getTemplateCache(repoPath);
+  /** 스토리지 템플릿 가져오기 */
+  const storageTemplates = await getTemplateStorage(repoPath);
 
-  if (cachedTemplates) {
+  if (storageTemplates) {
     console.log('[fetchPRTemplates] 캐시된 템플릿 반환');
     const templateMap = new Map<string, string>();
     const templateNames: string[] = [];
 
-    for (const [name, content] of Object.entries(cachedTemplates)) {
+    for (const [name, content] of Object.entries(storageTemplates)) {
       templateMap.set(name, content);
       templateNames.push(name);
     }
@@ -76,8 +76,8 @@ const fetchPRTemplates = async (): Promise<PRTemplatesResult> => {
     templateNames.push(name);
   }
 
-  /** 캐시 저장 (유효 기간: 30일) */
-  await setTemplateCache(repoPath, Object.fromEntries(templateMap), 1000 * 60 * 60 * 24 * 30);
+  /** 스토리지 저장 (유효 기간: 30일) */
+  await setTemplateStorage(repoPath, Object.fromEntries(templateMap), 1000 * 60 * 60 * 24 * 30);
 
   return { templateMap, templateNames };
 };

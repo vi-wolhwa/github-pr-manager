@@ -10,7 +10,7 @@ import userStorage from '@root/src/shared/storages/userStorage';
 import UserCode from './components/UserCode';
 
 import { Button, Heading, Text, Flash, Stack } from '@primer/react';
-import { clearTemplateCache } from '../../content/PRTemplates/utils/templateCache';
+import { clearTemplateStorage } from '../../content/PRTemplates/utils/templateStorage';
 import PRTemplateSettingContainer from './containers/PRTemplateSetting';
 
 const cx = classNames.bind(styles);
@@ -49,7 +49,7 @@ const Popup = () => {
 
     if (!confirmed) return;
 
-    await clearTemplateCache();
+    await clearTemplateStorage();
 
     // 현재 탭 PR 생성 주소로 강제 이동
     chrome.tabs.query({ active: true, currentWindow: true }, tabs => {

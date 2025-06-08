@@ -12,8 +12,6 @@ let initialized = false;
  * 템플릿을 불러오고 셀렉터를 삽입하는 로직
  */
 const runPRTemplateScriptCore = async () => {
-  console.log('상태', initialized);
-
   if (initialized) {
     console.log('[PR 템플릿] 이미 초기화됨, 실행 건너뜀');
     return;
@@ -62,7 +60,7 @@ const runPRTemplateScriptCore = async () => {
  */
 const runPRTemplateScript = () => {
   setInterval(() => {
-    const isPRPage = isCurrentPathname('github_pr_create');
+    const isPRPage = isCurrentPathname('compare');
 
     // URL이 바뀌었으면 초기화
     if (location.href !== prevUrl) {

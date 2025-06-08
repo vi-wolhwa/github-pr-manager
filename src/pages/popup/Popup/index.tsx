@@ -11,6 +11,7 @@ import UserCode from './components/UserCode';
 
 import { Button, Heading, Text, Flash, Stack } from '@primer/react';
 import { clearTemplateCache } from '../../content/PRTemplates/utils/templateCache';
+import PRTemplateSettingContainer from './containers/PRTemplateSetting';
 
 const cx = classNames.bind(styles);
 
@@ -145,6 +146,7 @@ const Popup = () => {
             }}>
             확장 프로그램 인증 해제하기
           </Button>
+          <PRTemplateSettingContainer />
         </div>
       )}
     </div>

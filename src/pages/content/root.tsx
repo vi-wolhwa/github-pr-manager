@@ -1,5 +1,5 @@
 /* ------------------------------------------------------------------ */
-/* 실행할 스크립트를 배열에 추가만 하면 자동으로 등록된다                */
+/* 실행할 스크립트를 배열에만 추가                                    */
 /* ------------------------------------------------------------------ */
 import runPRTitleAutoInsert from './prTitleAutoInsert';
 import runSampleNaverScript from './sampleNaver';
@@ -7,43 +7,31 @@ import runSampleNaverScript from './sampleNaver';
 const REGISTERED_SCRIPTS: Array<() => void> = [runSampleNaverScript, runPRTitleAutoInsert];
 
 /* ------------------------------------------------------------------ */
-/* IIFE로 감싸 조건부 return 오류 방지                                 */
+/* IIFE – 모든 실행 로직                                              */
 /* ------------------------------------------------------------------ */
 (() => {
-  /* 1. 서브프레임에 주입된 경우 즉시 종료 (중복 실행 차단) */
+  /* 1. 서브프레임이면 즉시 종료 */
   if (window.self !== window.top) {
-    console.debug('[ContentScript] sub-frame → 실행 차단');
-
     return;
   }
 
-  /* 2. 센티널(meta)로 “한 페이지 1 회” 실행 보장 */
-  const SENTINEL_ID = '__pr-review-sentinel';
-  if (document.getElementById(SENTINEL_ID)) {
-    console.debug('[ContentScript] sentinel 존재 → 중복 실행 차단');
+  /* 2. 센티널 속성을 붙일 대상 = <html> */
+  const ROOT = document.documentElement;
+  const S_ATTR = 'data-review-sentinel';
 
-    return;
-  }
-  {
-    const meta = document.createElement('meta');
-    meta.id = SENTINEL_ID;
-    document.head.appendChild(meta);
-  }
+  /* 3. 최근 실행한 URL (전역) */
+  const urlKey = '__review_last_url';
+  const getLastUrl = () => window[urlKey] as string | undefined;
+  const setLastUrl = (u: string) => (window[urlKey] = u);
 
-  /* 3. GitHub가 실제 콘텐츠를 교체하는 turbo-frame / pjax 컨테이너 */
-  const FRAME_SELECTOR = 'turbo-frame#repo-content-turbo-frame, div#repo-content-pjax-container';
-  const getFrame = (): HTMLElement | null => document.querySelector<HTMLElement>(FRAME_SELECTOR);
-
-  /* 4. 마지막으로 스크립트를 실행한 URL (turbo 전환 중복 방지) */
-  let lastRunUrl = '';
-
-  /* 5. 등록된 스크립트 실행 함수 */
+  /* 4. Content-script 일괄 실행 */
   const runContentScripts = () => {
-    /* 같은 URL이면 재실행 X */
-    if (location.href === lastRunUrl) {
+    /* 조건 1: 같은 URL + 센티널 존재 → 재실행 X */
+    if (ROOT.hasAttribute(S_ATTR) && getLastUrl() === location.href) {
       return;
     }
-    lastRunUrl = location.href;
+
+    setLastUrl(location.href);
 
     REGISTERED_SCRIPTS.forEach(fn => {
       try {
@@ -52,20 +40,27 @@ const REGISTERED_SCRIPTS: Array<() => void> = [runSampleNaverScript, runPRTitleA
         console.error('[ContentScript] 실행 실패:', err);
       }
     });
+
+    /* 실행 완료 → 센티널 부여 */
+    ROOT.setAttribute(S_ATTR, '1');
   };
 
-  /* 6. 최초 1회 실행 */
+  /* 5. 최초 1 회 */
   runContentScripts();
 
-  /* 7. GitHub Hotwire 이벤트(turbo:load) */
-  window.addEventListener('turbo:load', runContentScripts);
+  /* 6. turbo:before-render → 같은 URL 재클릭 대비: 센티널·URL 초기화 */
+  window.addEventListener('turbo:before-render', () => {
+    ROOT.removeAttribute(S_ATTR);
+    setLastUrl(undefined);
+  });
 
-  /* 8. 앞으로/뒤로(popstate) */
+  /* 7. turbo:load / popstate → URL 이동 시 재실행 */
+  window.addEventListener('turbo:load', runContentScripts);
   window.addEventListener('popstate', runContentScripts);
 
-  /* 9. turbo-frame 교체 감지 → frame 새로 생기면 재실행 */
+  /* 8. MutationObserver – 센티널이 사라지면 재실행 (Frame 교체 등) */
   const bodyObserver = new MutationObserver(() => {
-    if (getFrame() && location.href !== lastRunUrl) {
+    if (!ROOT.hasAttribute(S_ATTR)) {
       runContentScripts();
     }
   });

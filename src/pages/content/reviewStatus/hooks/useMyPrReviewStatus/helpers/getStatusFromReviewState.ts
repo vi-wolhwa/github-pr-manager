@@ -14,6 +14,7 @@ const getStatusFromReviewState = (state: string): PrReviewStatus => {
       return PR_REVIEW_STATUS.change;
     case 'COMMENTED':
       return PR_REVIEW_STATUS.pend;
+    // TODO: DISMISSED / Skip 케이스 상황 고려 @tobi-ouo
     case 'DISMISSED':
       return PR_REVIEW_STATUS.skip;
     default:

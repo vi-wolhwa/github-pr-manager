@@ -72,7 +72,7 @@ const debounceRunContentScripts = () => {
   runTimeout = setTimeout(() => {
     runContentScripts();
     runTimeout = null;
-  }, 300); /* 300ms 후 마지막 호출 한 번만 실행 */
+  }, 10000);
 };
 
 /* ------------------------------------------------------------------ */

@@ -44,6 +44,7 @@ const runPrReviewStatusScript = async () => {
 
     /* 4-3. 상태 아이콘(<ReviewStatus>) 삽입 */
     updateDom({
+      key: `${PAGE}-${owner}-${repo}-${pullNumber}`,
       action: 'insertAfter',
       targetSelector: `.${uniqueCls} ${SELECTOR[PAGE].PR_OPEN_STATUS}`,
       component: (

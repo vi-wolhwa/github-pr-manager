@@ -3,6 +3,8 @@ import { createRoot } from 'react-dom/client';
 type Action = 'replace' | 'insertBefore' | 'insertAfter' | 'append' | 'prepend' | 'remove';
 
 type Params = {
+  /* 요소 중복 추가를 방지하기 위한 key (고유 문자열) */
+  key?: string;
   /**
    * 삽입/제거/교체 방식
    * - replace: mountDiv를 target 위치에 삽입하고 target 제거
@@ -31,6 +33,7 @@ type Params = {
  * targetSelector로 찾은 DOM 노드(들)에 React 컴포넌트 또는 HTML 요소를 삽입·교체하거나, DOM 노드를 제거한다.
  */
 const updateDom = ({
+  key,
   action,
   targetSelector,
   component,
@@ -43,11 +46,23 @@ const updateDom = ({
    * mountDiv를 만들고 컴포넌트를 렌더하거나, htmlElement를 추가하는 함수
    */
   const mount = (parent: Element, refNode?: ChildNode | null) => {
+    /* key 중복 검사 → 이미 존재하면 skip */
+    if (key && parent.querySelector(`[data-update-dom-key="${key}"]`)) {
+      return;
+    }
+
+    /* 컴포넌트 or HTML 삽입 */
     if (component) {
       const mountDiv = document.createElement('div');
+      if (key) {
+        mountDiv.dataset.updateDomKey = key;
+      }
       parent.insertBefore(mountDiv, refNode ?? null);
       createRoot(mountDiv).render(component);
     } else if (htmlElement) {
+      if (key) {
+        htmlElement.dataset.updateDomKey = key;
+      }
       parent.insertBefore(htmlElement, refNode ?? null);
     }
   };
@@ -67,6 +82,11 @@ const updateDom = ({
 
     targets.forEach(target => {
       onBefore?.(target);
+
+      /* key가 있을 때 remove 계열이면 먼저 기존 key-요소 제거 */
+      if (key && (action === 'replace' || action === 'remove')) {
+        target.querySelectorAll(`[data-update-dom-key="${key}"]`).forEach(e => e.remove());
+      }
 
       switch (action) {
         case 'replace':

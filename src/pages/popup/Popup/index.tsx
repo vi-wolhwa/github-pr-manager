@@ -7,8 +7,10 @@ import { sendPollingForTokenMessage } from '@root/src/utils/sendPollingForTokenM
 import { useState } from 'react';
 import useStorage from '@root/src/shared/hooks/useStorage';
 import userStorage from '@root/src/shared/storages/userStorage';
-import Button from './components/Button';
 import UserCode from './components/UserCode';
+
+import { Button, Heading, Text, Flash, Stack } from '@primer/react';
+import PRTemplateSettingContainer from './containers/PRTemplateSetting';
 
 const cx = classNames.bind(styles);
 
@@ -41,34 +43,72 @@ const Popup = () => {
 
   return (
     <div className={cx('wrap')}>
+      {/* 로그인 전인 제목/설명 */}
+      {!userId && (
+        <>
+          <Heading as="h2" sx={{ mb: 3 }}>
+            kakaopaysec FE GitHub 인증
+          </Heading>
+          <Text as="p" sx={{ fontSize: 1, color: 'fg.muted', mb: 3 }}>
+            이 확장 프로그램은 <strong>kakaopaysec</strong>의 GitHub 기능을 확장해줍니다. <br />
+            사용하려면 먼저 GitHub 계정을 등록해주세요.
+          </Text>
+        </>
+      )}
+
       {/* 로그인 전 */}
       {!userId && (
         <>
           {/* 등록 전 */}
           {!deviceInfo && (
-            <div>
-              <Button onClick={onClickRegisterButton}>깃허브 등록하기</Button>
-            </div>
+            <Button variant="primary" onClick={onClickRegisterButton}>
+              Register my GitHub account
+            </Button>
           )}
+
           {/* 등록 위한 코드 보여주는 단계 */}
           {deviceInfo && (
-            <div>
+            <>
               <UserCode onClick={onClickCopyButton} userCode={deviceInfo.user_code} />
-              {showRegisterPage && <p>복사가 완료되었습니다.</p>}
-            </div>
-          )}
-          {/* 등록 페이지로 이동 위한  단계 */}
-          {showRegisterPage && (
-            <div>
-              <Button onClick={onClickMoveRegisterPage}>등록 페이지로 이동</Button>
-            </div>
+
+              {showRegisterPage && (
+                <Stack direction="vertical" sx={{ mt: 2 }}>
+                  <Flash variant="success">인증 코드가 복사되었습니다.</Flash>
+
+                  <Button variant="primary" onClick={onClickMoveRegisterPage}>
+                    등록 페이지로 이동하기
+                  </Button>
+                </Stack>
+              )}
+            </>
           )}
         </>
       )}
+
       {/* 로그인 이후 */}
       {userId && (
-        <div>
-          <p>{`안녕하세요. ${userId}님`}</p>
+        <div style={{ marginTop: '16px' }}>
+          <Heading as="h2" sx={{ mb: 2 }}>
+            반갑습니다, <strong>{userId}</strong>님 👋
+          </Heading>
+          <Text as="p" sx={{ fontSize: 1, color: 'fg.muted' }}>
+            GitHub 계정이 정상적으로 등록되었습니다. 확장 프로그램의 기능을 자유롭게 활용하실 수 있어요.
+          </Text>
+
+          {/* 확장 해제 버튼 */}
+          <Button
+            variant="invisible"
+            size="small"
+            sx={{ color: 'danger.fg', mt: 2 }}
+            onClick={() => {
+              if (confirm('정말로 확장 프로그램 인증을 해제하시겠습니까?')) {
+                userStorage.set(null);
+                location.reload();
+              }
+            }}>
+            확장 프로그램 인증 해제하기
+          </Button>
+          <PRTemplateSettingContainer />
         </div>
       )}
     </div>

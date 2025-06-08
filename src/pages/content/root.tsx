@@ -19,8 +19,8 @@ const SENTINEL_ID = '__pr-review-sentinel';
 /* 마지막으로 스크립트를 실행한 URL (중복 실행 차단) */
 let lastRunUrl = '';
 
-/* 디바운스용 타이머 핸들러 */
-let runTimeout: ReturnType<typeof setTimeout> | null = null;
+/* 실행 여부 flag (현재 트리거에서 한 번만 실행되게) */
+let didRun = false;
 
 /* 현재 turbo-frame를 반환하는 함수 */
 const getFrame = (): HTMLElement | null => document.querySelector<HTMLElement>(FRAME_SELECTOR);
@@ -43,8 +43,14 @@ const addSentinel = () => {
 /**
  * 등록된 모든 Content Script를 실행한다.
  * - URL이 같고 센티널이 남아 있으면 중복 실행하지 않음
+ * - 한 트리거에서 한 번만 실행(flag) : 중복 실행 방지
  */
 const runContentScripts = () => {
+  if (didRun) {
+    return;
+  }
+  didRun = true;
+
   /* 같은 URL + 센티널 존재 → 이미 실행됨 : 중복 실행 차단 */
   if (location.href === lastRunUrl && hasSentinel()) {
     return;
@@ -65,17 +71,6 @@ const runContentScripts = () => {
   addSentinel();
 };
 
-/* 디바운스 래퍼 함수: 여러 번 트리거되어도 최종 한 번만 실행 */
-const debounceRunContentScripts = () => {
-  if (runTimeout) {
-    clearTimeout(runTimeout);
-  }
-  runTimeout = setTimeout(() => {
-    runContentScripts();
-    runTimeout = null;
-  }, 10000);
-};
-
 /* ------------------------------------------------------------------ */
 /* 실행 트리거 등록                                                   */
 /* ------------------------------------------------------------------ */
@@ -83,16 +78,23 @@ const debounceRunContentScripts = () => {
 /* 최초 페이지 로드 */
 runContentScripts();
 
-/* turbo-frame 교체, 센티널이 사라지면 디바운스 실행 */
+/* turbo-frame 교체, 센티널이 사라지면 flag를 false로 초기화 + 재실행 */
 const bodyObserver = new MutationObserver(() => {
   if (!hasSentinel()) {
-    debounceRunContentScripts();
+    didRun = false; /* frame이 교체된 경우, flag 초기화 */
+    runContentScripts(); /* 최초 한 번만 실행됨 */
   }
 });
 bodyObserver.observe(document.body, { childList: true, subtree: true });
 
-/* GitHub Hotwire 이벤트(turbo:load) */
-window.addEventListener('turbo:load', debounceRunContentScripts);
+/* GitHub Hotwire 이벤트(turbo:load) → flag 초기화 + 실행 */
+window.addEventListener('turbo:load', () => {
+  didRun = false;
+  runContentScripts();
+});
 
-/* 앞으로 / 뒤로(popstate) */
-window.addEventListener('popstate', debounceRunContentScripts);
+/* 앞으로 / 뒤로(popstate) → flag 초기화 + 실행 */
+window.addEventListener('popstate', () => {
+  didRun = false;
+  runContentScripts();
+});

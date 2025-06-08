@@ -1,19 +1,14 @@
 /** 페이지 명칭 */
-export type PageName = 'naver' | 'github' | 'compare' | 'github_pr_create';
+export type PageName = 'naver' | 'compare';
 
 /** 페이지 URL */
 export const PAGE_URL: Record<PageName, string> = {
   naver: 'naver.com',
-  github: 'github.com',
-  github_pr_create: 'github.com',
   compare: 'github.com',
 };
 
 /** 페이지 URL 정규식 */
 export const PAGE_URL_REGEX: Record<PageName, RegExp> = {
   naver: /naver\.com/,
-  github: /github\.com/,
-  /** github_pr_create ex) /owner/repo/compare/feat/test, /owner/repo/compare/feat/test?expand=1 */
-  github_pr_create: /^\/[^/]+\/[^/]+\/compare(\/[^?]+)?(\?.*)?$/,
   compare: /github\.com\/[^/]+\/[^/]+\/compare\//,
 };

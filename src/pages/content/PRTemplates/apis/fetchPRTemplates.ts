@@ -3,7 +3,7 @@ import { isCurrentPathname } from '../../shared/utils/siteUtils';
 import { getRepoPath } from '../helpers/getRepoPath';
 
 const runPRTemplateScript = async () => {
-  if (!isCurrentPathname('github_pr_create')) return;
+  if (!isCurrentPathname('compare')) return;
 
   const { access_token } = await userStorage.get();
   if (!access_token) {

@@ -4,19 +4,31 @@ import NeedIcon from '../../../../../assets/img/dot-fill.svg?react';
 import PendIcon from '../../../../../assets/img/comment.svg?react';
 import DoneIcon from '../../../../../assets/img/check.svg?react';
 import SkipIcon from '../../../../../assets/img/skip.svg?react';
-import { GithubContext } from '../../utils/getGithubContext';
+import { GithubContext } from '../../utils/getUserContext';
 
 type Props = GithubContext & {
-  /* 해당 PR의 번호 */
+  /** 현재 페이지 이름 */
+  pageName: string;
+  /** 해당 PR의 번호 */
   pullNumber: number;
 };
 
 const ICON_SIZE = 16;
+const WRAP_ATTRS = {
+  pulls: {
+    className: 'flex-shrink-0 pl-3',
+    style: { paddingTop: 12 },
+  },
+  project: {
+    className: 'header-module__Box_5--UJ0qF',
+    style: { paddingTop: 7 },
+  },
+};
 
 /**
  * 각 PR별 리뷰 상태에 따라 알맞은 아이콘을 표시하는 컴포넌트
  */
-const ReviewStatus = ({ pullNumber, owner, repo, token, myLogin }: Props) => {
+const ReviewStatus = ({ pageName, pullNumber, owner, repo, token, myLogin }: Props) => {
   /* 내 PR 리뷰 상태를 가져오는 커스텀 훅 호출 */
   const { status, error } = useMyPrReviewStatus({
     owner,
@@ -45,11 +57,7 @@ const ReviewStatus = ({ pullNumber, owner, repo, token, myLogin }: Props) => {
     }
   };
 
-  return (
-    <div className="flex-shrink-0 pl-3" style={{ paddingTop: 12 }}>
-      {getIcon()}
-    </div>
-  );
+  return <div {...WRAP_ATTRS[pageName]}>{getIcon()}</div>;
 };
 
 export default ReviewStatus;

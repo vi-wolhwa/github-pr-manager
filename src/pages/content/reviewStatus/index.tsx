@@ -2,49 +2,87 @@ import { isCurrentPage } from '../shared/utils/siteUtils';
 import updateDom from '../shared/utils/updateDom';
 import ReviewStatus from './components/ReviewStatus/index';
 import SELECTOR from './constants/selector';
-import { getGithubContext } from './utils/getGithubContext';
-import { getPullNumberFromHref } from './utils/getPullNumberFromHref';
+import { getUserContext } from './utils/getUserContext';
+import { getPrContext } from './utils/getPrContextFromHref';
 
 /**
  * PR 목록에서 각 PR별 리뷰 상태 아이콘을 렌더링하는 스크립트
- * - Pulls(리스트) 페이지에서만 동작
+ * - Pulls(리스트), Project(칸반보드) 페이지에서만 동작
  * - 각 PR 항목에서 pull number, 상태영역, 링크 등 주요 요소 추출
  * - 각 PR 항목에 리뷰 상태 컴포넌트를 삽입
  */
 const runPrReviewStatusScript = async () => {
-  /* 1. Pulls(목록) 페이지가 아니면 실행하지 않음 */
-  if (!isCurrentPage('pulls')) {
+  if (!isCurrentPage('pulls') && !isCurrentPage('project')) {
     return;
   }
 
-  /* 2. 깃허브 정보(owner, repo, myLogin, token) 획득 (실패 시 종료) */
-  const context = await getGithubContext();
-  const { owner, repo, myLogin, token } = context;
-  if (!context) {
+  /* 1. 사용자 정보(myLogin, token) 획득 (실패 시 종료) */
+  const { myLogin, token } = await getUserContext();
+  if (!(myLogin && token)) {
     return;
   }
 
-  /** 3. PR 목록 내 각 PR 요소 순회 */
-  document.querySelectorAll(SELECTOR.PULLS.PR_ITEM).forEach(item => {
-    /** PR 상세 링크 요소 */
-    const $prLink = item.querySelector(SELECTOR.PULLS.PR_LINK);
-    /** PR 오픈상태 요소 */
-    const $prOpenStatus = item.querySelector(SELECTOR.PULLS.PR_OPEN_STATUS);
-    /** PR 번호 추출 */
-    const pullNumber = getPullNumberFromHref($prLink?.getAttribute('href') || '');
+  /* 2. pulls/project 분기 처리 */
+  if (isCurrentPage('pulls')) {
+    document.querySelectorAll(SELECTOR.PULLS.PR_ITEM).forEach((item, idx) => {
+      /* 1. 유니크 임시 클래스 부여 (기존에 있으면 덮어쓰지 않음) */
+      const uniqueClass = `__reviewstatus-pritem-${idx}`;
+      item.classList.add(uniqueClass);
 
-    /* 필수 값이 모두 있을 때만 진행 */
-    if (!($prLink && $prOpenStatus && pullNumber)) {
-      return;
-    }
+      /* 2. PR 상세 링크에서 owner/repo/pullNumber 추출 */
+      const $prLink = item.querySelector(SELECTOR.PULLS.PR_LINK);
+      const prLink = $prLink?.getAttribute('href') || '';
+      const { owner, repo, pullNumber } = getPrContext(prLink);
 
-    /* 4. PR 오픈상태 요소 바로 다음에 리뷰상태 컴포넌트 삽입 */
-    updateDom({
-      action: 'insertAfter',
-      targetSelector: `#${item.id} ${SELECTOR.PULLS.PR_OPEN_STATUS}`,
-      component: <ReviewStatus pullNumber={pullNumber} owner={owner} repo={repo} token={token} myLogin={myLogin} />,
+      if (!(owner && repo && pullNumber)) {
+        return;
+      }
+
+      /* 3. updateDom 호출 */
+      updateDom({
+        action: 'insertAfter',
+        targetSelector: `.${uniqueClass} ${SELECTOR.PULLS.PR_OPEN_STATUS}`,
+        component: (
+          <ReviewStatus
+            pageName="pulls"
+            pullNumber={Number(pullNumber)}
+            owner={owner}
+            repo={repo}
+            token={token}
+            myLogin={myLogin}
+          />
+        ),
+      });
     });
-  });
+  } else if (isCurrentPage('project')) {
+    document.querySelectorAll(SELECTOR.PROJECT.PR_ITEM).forEach((item, idx) => {
+      /* 1. 유니크 임시 클래스 부여 (기존에 있으면 덮어쓰지 않음) */
+      const uniqueClass = `__reviewstatus-pritem-${idx}`;
+      item.classList.add(uniqueClass);
+      /* 2. PR 상세 링크에서 owner/repo/pullNumber 추출 */
+      const $prLink = item.querySelector(SELECTOR.PROJECT.PR_LINK);
+      const prLink = $prLink?.getAttribute('href') || '';
+      const { owner, repo, pullNumber } = getPrContext(prLink);
+      if (!(owner && repo && pullNumber)) {
+        return;
+      }
+      /* 3. updateDom 호출 */
+      updateDom({
+        action: 'insertAfter',
+        targetSelector: `.${uniqueClass} ${SELECTOR.PROJECT.PR_OPEN_STATUS}`,
+        component: (
+          <ReviewStatus
+            pageName="project"
+            pullNumber={Number(pullNumber)}
+            owner={owner}
+            repo={repo}
+            token={token}
+            myLogin={myLogin}
+          />
+        ),
+      });
+    });
+  }
 };
 
 export default runPrReviewStatusScript;

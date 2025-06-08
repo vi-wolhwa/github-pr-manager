@@ -6,7 +6,9 @@ import fetchPRTemplates from './apis/fetchPRTemplates';
  * GitHub PR 템플릿 스크립트
  */
 const runPRTemplateScript = async () => {
-  if (!isCurrentPathname('compare')) return;
+  if (!isCurrentPathname('compare')) {
+    return;
+  };
 
   try {
     const templates = await fetchPRTemplates();

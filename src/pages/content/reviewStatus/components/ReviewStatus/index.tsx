@@ -6,31 +6,31 @@ import DoneIcon from '../../../../../assets/img/check.svg?react';
 import SkipIcon from '../../../../../assets/img/skip.svg?react';
 import { GithubContext } from '../../utils/getUserContext';
 
+/* 컴포넌트 외관에 사용할 상수 */
+const ICON_SIZE = 16;
+
+/* 페이지별 래퍼(div) 속성 */
+const WRAP_ATTRS = {
+  PULLS: { className: 'flex-shrink-0 pl-3', style: { paddingTop: 12 } },
+  PROJECT: { className: 'header-module__Box_5--UJ0qF', style: { paddingTop: 7 } },
+} as const;
+
+/* Props – 상위 컨텍스트 + 추가 파라미터 */
 type Props = GithubContext & {
-  /** 현재 페이지 이름 */
-  pageName: string;
-  /** 해당 PR의 번호 */
+  /* 현재 페이지 구분(PULLS | project) */
+  pageName: 'PULLS' | 'PROJECT';
+  /* 대상 PR 번호 */
   pullNumber: number;
 };
 
-const ICON_SIZE = 16;
-const WRAP_ATTRS = {
-  pulls: {
-    className: 'flex-shrink-0 pl-3',
-    style: { paddingTop: 12 },
-  },
-  project: {
-    className: 'header-module__Box_5--UJ0qF',
-    style: { paddingTop: 7 },
-  },
-};
-
 /**
- * 각 PR별 리뷰 상태에 따라 알맞은 아이콘을 표시하는 컴포넌트
+ * PR 리뷰 상태에 따른 아이콘을 렌더링한다
+ * - 커스텀 훅(useMyPrReviewStatus)으로 상태 조회
+ * - 상태값 → 아이콘 매핑 후 페이지별 위치에 삽입
  */
 const ReviewStatus = ({ pageName, pullNumber, owner, repo, token, myLogin }: Props) => {
-  /* 내 PR 리뷰 상태를 가져오는 커스텀 훅 호출 */
-  const { status, error } = useMyPrReviewStatus({
+  /* 1. 내 리뷰 상태 조회 */
+  const { status } = useMyPrReviewStatus({
     owner,
     repo,
     pullNumber,
@@ -38,8 +38,8 @@ const ReviewStatus = ({ pageName, pullNumber, owner, repo, token, myLogin }: Pro
     myLogin,
   });
 
-  /* 리뷰 상태별로 대응되는 아이콘 반환 */
-  const getIcon = () => {
+  /* 2. 상태 → 아이콘 매핑 */
+  const icon = (() => {
     switch (status) {
       case PR_REVIEW_STATUS.need:
         return <NeedIcon width={ICON_SIZE} height={ICON_SIZE} />;
@@ -53,11 +53,12 @@ const ReviewStatus = ({ pageName, pullNumber, owner, repo, token, myLogin }: Pro
       case PR_REVIEW_STATUS.error:
       case PR_REVIEW_STATUS.none:
       default:
-        return <div style={{ height: ICON_SIZE, width: ICON_SIZE }} />;
+        return <div style={{ width: ICON_SIZE, height: ICON_SIZE }} />;
     }
-  };
+  })();
 
-  return <div {...WRAP_ATTRS[pageName]}>{getIcon()}</div>;
+  /* 3. 아이콘 출력 */
+  return <div {...WRAP_ATTRS[pageName]}>{icon}</div>;
 };
 
 export default ReviewStatus;

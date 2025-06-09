@@ -20,6 +20,9 @@ function initReloadServer() {
       if (typeof event.data !== 'string') {
         return;
       }
+      if (typeof event.data !== 'string') {
+        return;
+      }
 
       const message = MessageInterpreter.receive(event.data);
 
@@ -53,6 +56,9 @@ const srcWatcher = chokidar.watch('src', { ignorePermissionErrors: true }) as an
 srcWatcher.on('all', (_, path) => debounceSrc(path));
 
 /** CHECK:: manifest.js was updated **/
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const manifestWatcher = chokidar.watch('manifest.js', { ignorePermissionErrors: true }) as any;
+manifestWatcher.on('all', () => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const manifestWatcher = chokidar.watch('manifest.js', { ignorePermissionErrors: true }) as any;
 manifestWatcher.on('all', () => {

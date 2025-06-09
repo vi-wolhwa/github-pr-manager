@@ -2,7 +2,7 @@
 const GITHUB_BASE_URL = 'https://github.com';
 
 /** 깃허브 API 요청 url */
-const GITHUB_API_BASE_URL = 'https://api.github.com';
+export const GITHUB_API_BASE_URL = 'https://api.github.com';
 
 /** 깃허브 경로 */
 export const GITHUB_URL = {

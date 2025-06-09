@@ -20,6 +20,9 @@ function initReloadServer() {
       if (typeof event.data !== 'string') {
         return;
       }
+      if (typeof event.data !== 'string') {
+        return;
+      }
 
       const message = MessageInterpreter.receive(event.data);
 
@@ -47,6 +50,7 @@ const debounceSrc = debounce(function (path: string) {
     ws.send(MessageInterpreter.send({ type: 'wait_update', path: pathConverted })),
   );
 }, 100);
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const srcWatcher = chokidar.watch('src', { ignorePermissionErrors: true }) as any;
 srcWatcher.on('all', (_, path) => debounceSrc(path));

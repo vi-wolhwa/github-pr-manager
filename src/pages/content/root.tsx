@@ -3,8 +3,9 @@
 /* ------------------------------------------------------------------ */
 import runPRTitleAutoInsert from './prTitleAutoInsert';
 import runSampleNaverScript from './sampleNaver';
+import runPREditorAssistant from './addPRButton';
 
-const REGISTERED_SCRIPTS: Array<() => void> = [runSampleNaverScript, runPRTitleAutoInsert];
+const REGISTERED_SCRIPTS: Array<() => void> = [runSampleNaverScript, runPRTitleAutoInsert, runPREditorAssistant];
 
 /* ------------------------------------------------------------------ */
 /* GitHub SPA 네비게이션 대응을 위한 유틸, 센티널 설정                   */

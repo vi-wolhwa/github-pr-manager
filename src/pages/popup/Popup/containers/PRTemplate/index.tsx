@@ -1,6 +1,5 @@
-import { Button } from '@primer/react';
+import { Button, Text } from '@primer/react';
 import PanelWrapper from '../../components/PanelWrapper';
-import { SyncIcon } from '@primer/octicons-react';
 import { clearTemplateStorage } from '@root/src/pages/content/PRTemplates/utils/templateStorage';
 
 /**

@@ -10,14 +10,13 @@ import userStorage from '@root/src/shared/storages/userStorage';
 import UserCode from './components/UserCode';
 
 import { Button, Heading, Text, Flash, Stack } from '@primer/react';
-import { clearTemplateStorage } from '../../content/PRTemplates/utils/templateStorage';
-import PRTemplateSettingContainer from './containers/PRTemplateSetting';
 import { TABS } from './constants/tabs';
 import { UnderlinePanels } from '@primer/react/experimental';
 import Home from './containers/Home';
 import PRTemplate from './containers/PRTemplate';
 import Settings from './containers/Settings';
 import PRTitleAutoInsertContainer from './containers/PRTitleAutoInsert';
+import PRTemplateContainer from './containers/PRTemplate/index';
 
 const cx = classNames.bind(styles);
 
@@ -104,7 +103,6 @@ const Popup = () => {
             GitHub 계정이 정상적으로 등록되었습니다. 확장 프로그램의 기능을 자유롭게 활용하실 수 있어요.
           </Text>
 
-          <PRTemplateSettingContainer />
           <UnderlinePanels>
             {tabList.map(tab => (
               <UnderlinePanels.Tab key={tab}>{tab}</UnderlinePanels.Tab>

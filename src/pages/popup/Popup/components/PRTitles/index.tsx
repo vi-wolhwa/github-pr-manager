@@ -2,6 +2,6 @@ import ServiceList from './ServiceList';
 import TemplateInput from './TemplateInput';
 import Wrapper from './Wrapper';
 
-const PRTemplateSetting = { Wrapper, ServiceList, TemplateInput };
+const PRTitles = { Wrapper, ServiceList, TemplateInput };
 
-export default PRTemplateSetting;
+export default PRTitles;

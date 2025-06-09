@@ -1,6 +1,7 @@
 import { Service } from '@root/src/shared/storages/serviceListStorage';
 import styles from './ServiceList.module.scss';
 import classNames from 'classnames/bind';
+import { Button, Text } from '@primer/react';
 
 const cx = classNames.bind(styles);
 
@@ -19,12 +20,16 @@ const ServiceList = ({ serviceList, removeService }: Props) => {
       <ul className={cx('service_list')}>
         {serviceList.map(({ name, displayName }) => (
           <li key={name} className={cx('service_item')}>
-            <span className={cx('name')}>{name}</span>
-            <span className={cx('finger_emoji')}>👉</span>
-            <span className={cx('display_name')}>{displayName}</span>
-            <button className={cx('remove_button')} onClick={() => removeService(name)}>
-              삭제
-            </button>
+            <Text sx className={cx('name')} weight="medium">
+              {name}
+            </Text>
+            <Text sx className={cx('finger_emoji')}>
+              👉
+            </Text>
+            <Text sx className={cx('display_name')}>
+              {displayName}
+            </Text>
+            <Button onClick={() => removeService(name)}>삭제</Button>
           </li>
         ))}
       </ul>

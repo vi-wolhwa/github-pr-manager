@@ -1,7 +1,6 @@
 import userStorage from '@root/src/shared/storages/userStorage';
 import { getRepoPath } from '../helpers/getRepoPath';
 import { getTemplateStorage, setTemplateStorage } from '../utils/templateStorage';
-import { fetchWithRetry } from '../utils/fetchWithRetry';
 
 export type PRTemplatesResult = {
   /** 템플릿 이름 ↔ 내용 매핑 */
@@ -51,8 +50,8 @@ const fetchPRTemplates = async (): Promise<PRTemplatesResult> => {
   }
 
   const path = '.github/PULL_REQUEST_TEMPLATE';
-  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
-  const res = await fetchWithRetry(url, {
+
+  const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
     headers: {
       Authorization: `token ${access_token}`,
       Accept: 'application/vnd.github.v3+json',

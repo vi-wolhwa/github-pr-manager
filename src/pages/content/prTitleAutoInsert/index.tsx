@@ -12,11 +12,7 @@ const runPRTitleAutoInsert = async () => {
     compare: '',
   };
 
-  if (isCurrentPage('github')) {
-    if (!isCurrentPage('compare')) {
-      return; // 현재 페이지가 GitHub PR 페이지가 아니라면 함수 종료
-    }
-
+  if (isCurrentPage('compare')) {
     const prBranches = getBranchName();
     if (prevBranchName.base === prBranches.base && prevBranchName.compare === prBranches.compare) {
       return; // 브랜치 이름이 변경되지 않았다면 함수 종료

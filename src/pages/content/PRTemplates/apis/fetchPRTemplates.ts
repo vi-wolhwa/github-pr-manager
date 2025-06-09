@@ -71,6 +71,11 @@ const fetchPRTemplates = async (): Promise<PRTemplatesResult> => {
 
     try {
       const res = await fetch(file.download_url);
+      if (!res.ok) {
+        console.warn(`[fetchPRTemplates] ${file.name} 응답 실패 (${res.status})`);
+        continue;
+      }
+
       const content = await res.text();
       const name = file.name.replace(/\.md$/, '');
 
@@ -82,7 +87,9 @@ const fetchPRTemplates = async (): Promise<PRTemplatesResult> => {
   }
 
   /** 스토리지 저장 (유효 기간: 영구) */
-  await setTemplateStorage(repoPath, Object.fromEntries(templateMap), Infinity);
+  if (templateMap.size > 0) {
+    await setTemplateStorage(repoPath, Object.fromEntries(templateMap), Infinity);
+  }
 
   return { templateMap, templateNames };
 };

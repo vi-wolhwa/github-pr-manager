@@ -7,18 +7,8 @@ import { insertPRTitle } from './helpers/insertPRTitle';
  * 테스트를 위한 Sample Content 스크립트
  */
 const runPRTitleAutoInsert = async () => {
-  let prevBranchName = {
-    base: '',
-    compare: '',
-  };
-
   if (isCurrentPage('compare')) {
     const prBranches = getBranchName();
-    if (prevBranchName.base === prBranches.base && prevBranchName.compare === prBranches.compare) {
-      return; // 브랜치 이름이 변경되지 않았다면 함수 종료
-    }
-    prevBranchName = { ...prBranches };
-
     const prTitle = await getPRTitle(prBranches);
 
     insertPRTitle(prTitle);

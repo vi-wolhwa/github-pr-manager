@@ -1,25 +1,36 @@
 import userStorage from '@root/src/shared/storages/userStorage';
 import { getRepoPath } from '../helpers/getRepoPath';
 import { getTemplateStorage, setTemplateStorage } from '../utils/templateStorage';
+import { fetchWithRetry } from '../utils/fetchWithRetry';
 
 export type PRTemplatesResult = {
   /** 템플릿 이름 ↔ 내용 매핑 */
   templateMap: Map<string, string>;
   /** 템플릿 이름 목록 */
   templateNames: string[];
+  /** 에러 여부 */
+  hasError: boolean;
 };
 
 const fetchPRTemplates = async (): Promise<PRTemplatesResult> => {
-  const { access_token } = await userStorage.get();
+  let access_token = '';
+  try {
+    const result = await userStorage.get();
+    access_token = result.access_token;
+  } catch (e) {
+    console.warn('[fetchPRTemplates] userStorage 접근 실패', e);
+    return { templateMap: new Map(), templateNames: [], hasError: true };
+  }
+
   if (!access_token) {
     console.warn('[fetchPRTemplates] access_token이 없습니다.');
-    return { templateMap: new Map(), templateNames: [] };
+    return { templateMap: new Map(), templateNames: [], hasError: true };
   }
 
   const repoInfo = getRepoPath();
   if (!repoInfo) {
     console.warn('[fetchPRTemplates] owner/repo 정보를 추출할 수 없습니다.');
-    return { templateMap: new Map(), templateNames: [] };
+    return { templateMap: new Map(), templateNames: [], hasError: true };
   }
 
   const { owner, repo } = repoInfo;
@@ -36,22 +47,28 @@ const fetchPRTemplates = async (): Promise<PRTemplatesResult> => {
       templateNames.push(name);
     }
 
-    return { templateMap, templateNames };
+    return { templateMap, templateNames, hasError: false };
   }
 
   const path = '.github/PULL_REQUEST_TEMPLATE';
-  const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+  const res = await fetchWithRetry(url, {
     headers: {
       Authorization: `token ${access_token}`,
       Accept: 'application/vnd.github.v3+json',
     },
   });
 
+  if (!res || !res.ok) {
+    console.warn('[fetchPRTemplates] 템플릿 경로 fetch 실패');
+    return { templateMap: new Map(), templateNames: [], hasError: true };
+  }
+
   const json = await res.json();
 
   if (!Array.isArray(json)) {
     console.warn('[fetchPRTemplates] 템플릿 파일이 배열이 아님');
-    return { templateMap: new Map(), templateNames: [] };
+    return { templateMap: new Map(), templateNames: [], hasError: true };
   }
 
   const templateMap = new Map<string, string>();
@@ -91,7 +108,7 @@ const fetchPRTemplates = async (): Promise<PRTemplatesResult> => {
     await setTemplateStorage(repoPath, Object.fromEntries(templateMap), Infinity);
   }
 
-  return { templateMap, templateNames };
+  return { templateMap, templateNames, hasError: false };
 };
 
 export default fetchPRTemplates;

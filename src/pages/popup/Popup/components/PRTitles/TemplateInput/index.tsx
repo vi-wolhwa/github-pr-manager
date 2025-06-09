@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import styles from './TemplateInput.module.scss';
 import classNames from 'classnames/bind';
 import { Service } from '@root/src/shared/storages/serviceListStorage';
+import { Button, TextInput } from '@primer/react';
 
 const cx = classNames.bind(styles);
 
@@ -39,8 +40,7 @@ const TemplateInput = ({ addService }: Props) => {
 
   return (
     <div className={cx('wrap')}>
-      <input
-        className={cx('input')}
+      <TextInput
         value={name}
         ref={nameRef}
         onChange={onChangeName}
@@ -48,16 +48,15 @@ const TemplateInput = ({ addService }: Props) => {
         placeholder="feat/{service}"
       />
       <span className={cx('finger_emoji')}>👉</span>
-      <input
-        className={cx('input')}
+      <TextInput
         value={displayName}
         onChange={onChangeDisplayName}
         onKeyDown={onKeyDown}
         placeholder="pr에 보일 이름"
       />
-      <button className={cx('button')} onClick={onClickAddButton}>
+      <Button variant="primary" onClick={onClickAddButton}>
         추가
-      </button>
+      </Button>
     </div>
   );
 };

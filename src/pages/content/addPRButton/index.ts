@@ -164,7 +164,7 @@ const addPRMarkdownButtons = () => {
 /**
  * GitHub PR 페이지에서 버튼을 추가
  */
-const initializePRMarkdownButtons = () => {
+const runPREditorAssistant = () => {
   if (!isGitHubPRPage()) {
     return;
   }
@@ -197,4 +197,4 @@ const initializePRMarkdownButtons = () => {
   });
 };
 
-export default initializePRMarkdownButtons;
+export default runPREditorAssistant;

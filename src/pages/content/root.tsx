@@ -1,5 +1,5 @@
 import runSampleNaverScript from './sampleNaver';
-import initializePRMarkdownButtons from './addPRButton';
+import runPREditorAssistant from './addPRButton';
 
 /**
  * Content 스크립트를 실행하는 함수
@@ -7,7 +7,7 @@ import initializePRMarkdownButtons from './addPRButton';
  */
 const runContentScripts = () => {
   runSampleNaverScript();
-  initializePRMarkdownButtons();
+  runPREditorAssistant();
 };
 
 /*

@@ -59,9 +59,6 @@ srcWatcher.on('all', (_, path) => debounceSrc(path));
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const manifestWatcher = chokidar.watch('manifest.js', { ignorePermissionErrors: true }) as any;
 manifestWatcher.on('all', () => {
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const manifestWatcher = chokidar.watch('manifest.js', { ignorePermissionErrors: true }) as any;
-manifestWatcher.on('all', () => {
   needToForceReload = true;
 });
 

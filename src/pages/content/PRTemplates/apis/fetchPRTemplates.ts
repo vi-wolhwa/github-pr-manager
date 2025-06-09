@@ -1,6 +1,7 @@
 import userStorage from '@root/src/shared/storages/userStorage';
 import { getRepoPath } from '../helpers/getRepoPath';
 import { getTemplateStorage, setTemplateStorage } from '../utils/templateStorage';
+import useStorage from '@root/src/shared/hooks/useStorage';
 
 export type PRTemplatesResult = {
   /** 템플릿 이름 ↔ 내용 매핑 */
@@ -11,21 +12,15 @@ export type PRTemplatesResult = {
   hasError: boolean;
 };
 
-const fetchPRTemplates = async (): Promise<PRTemplatesResult> => {
-  let access_token = '';
-  try {
-    const result = await userStorage.get();
-    access_token = result.access_token;
-  } catch (e) {
-    console.warn('[fetchPRTemplates] userStorage 접근 실패', e);
-    return { templateMap: new Map(), templateNames: [], hasError: true };
-  }
+type Props = {
+  access_token: string;
+};
 
+const fetchPRTemplates = async (access_token: string): Promise<PRTemplatesResult> => {
   if (!access_token) {
     console.warn('[fetchPRTemplates] access_token이 없습니다.');
     return { templateMap: new Map(), templateNames: [], hasError: true };
   }
-
   const repoInfo = getRepoPath();
   if (!repoInfo) {
     console.warn('[fetchPRTemplates] owner/repo 정보를 추출할 수 없습니다.');

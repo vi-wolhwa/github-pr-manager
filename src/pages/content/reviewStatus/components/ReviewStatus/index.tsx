@@ -1,25 +1,11 @@
 import { useMyPrReviewStatus } from '../../hooks/useMyPrReviewStatus';
-import { PR_REVIEW_STATUS } from '../../hooks/useMyPrReviewStatus/types';
-import NeedIcon from '../../../../../assets/img/dot-fill.svg?react';
-import PendIcon from '../../../../../assets/img/comment.svg?react';
-import DoneIcon from '../../../../../assets/img/check.svg?react';
-import SkipIcon from '../../../../../assets/img/skip.svg?react';
+import { PR_REVIEW_STATUS_COLOR, PR_REVIEW_STATUS_LABEL } from '../../hooks/useMyPrReviewStatus/types';
 import { GithubContext } from '../../utils/getUserContext';
 
-/* 컴포넌트 외관에 사용할 상수 */
-const ICON_SIZE = 16;
-
-/* 페이지별 래퍼(div) 속성 */
-const WRAP_ATTRS = {
-  PULLS: { className: 'flex-shrink-0 pl-3', style: { paddingTop: 12 } },
-  PROJECT: { className: 'header-module__Box_5--UJ0qF', style: { paddingTop: 7 } },
-} as const;
-
-/* Props – 상위 컨텍스트 + 추가 파라미터 */
 type Props = GithubContext & {
-  /* 현재 페이지 구분(PULLS | project) */
+  /** 현재 페이지 */
   pageName: 'PULLS' | 'PROJECT';
-  /* 대상 PR 번호 */
+  /** 대상 PR 번호 */
   pullNumber: number;
 };
 
@@ -29,6 +15,10 @@ type Props = GithubContext & {
  * - 상태값 → 아이콘 매핑 후 페이지별 위치에 삽입
  */
 const ReviewStatus = ({ pageName, pullNumber, owner, repo, token, myLogin }: Props) => {
+  const isPageName = (targetPageName: 'PULLS' | 'PROJECT') => {
+    return pageName === targetPageName;
+  };
+
   /* 1. 내 리뷰 상태 조회 */
   const { status } = useMyPrReviewStatus({
     owner,
@@ -38,26 +28,50 @@ const ReviewStatus = ({ pageName, pullNumber, owner, repo, token, myLogin }: Pro
     myLogin,
   });
 
-  /* 2. 상태 → 아이콘 매핑 */
-  const icon = (() => {
-    switch (status) {
-      case PR_REVIEW_STATUS.NEED:
-        return <NeedIcon width={ICON_SIZE} height={ICON_SIZE} />;
-      case PR_REVIEW_STATUS.PEND:
-      case PR_REVIEW_STATUS.CHANGE:
-        return <PendIcon width={ICON_SIZE} height={ICON_SIZE} />;
-      case PR_REVIEW_STATUS.DONE:
-        return <DoneIcon width={ICON_SIZE} height={ICON_SIZE} />;
-      case PR_REVIEW_STATUS.SKIP:
-      case PR_REVIEW_STATUS.ERROR:
-      case PR_REVIEW_STATUS.NONE:
-      default:
-        return <div style={{ width: ICON_SIZE, height: ICON_SIZE }} />;
-    }
-  })();
+  /* 2. 상태 → 라벨 매핑 */
+  const label = PR_REVIEW_STATUS_LABEL[status] ?? '';
 
-  /* 3. 아이콘 출력 */
-  return <div {...WRAP_ATTRS[pageName]}>{icon}</div>;
+  if (!label) {
+    return;
+  }
+
+  /* 3. 리뷰 상태 출력 */
+  return (
+    <>
+      {isPageName('PULLS') && (
+        <div style={{ display: 'flex', height: '100%', padding: '14px 0 0 12px' }}>
+          <p
+            style={{
+              height: '17px',
+              margin: '0',
+              padding: '0 5px',
+              textWrap: 'nowrap',
+              borderRadius: '2em',
+              fontSize: '10px',
+              ...PR_REVIEW_STATUS_COLOR[status],
+            }}>
+            {label}
+          </p>
+        </div>
+      )}
+      {isPageName('PROJECT') && (
+        <div style={{ display: 'flex', height: '100%', padding: '0 0 0 12px' }}>
+          <p
+            style={{
+              height: '17px',
+              margin: '0',
+              padding: '0 5px',
+              textWrap: 'nowrap',
+              borderRadius: '2em',
+              fontSize: '10px',
+              ...PR_REVIEW_STATUS_COLOR[status],
+            }}>
+            {label}
+          </p>
+        </div>
+      )}
+    </>
+  );
 };
 
 export default ReviewStatus;

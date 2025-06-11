@@ -27,6 +27,8 @@ type Params = {
   onBefore?: (target: Element) => void;
   /** 여러 요소에 적용 여부 (true면 모두, false면 첫 번째 요소만) */
   isApplyAll?: boolean;
+  /** inline/block 여부 */
+  isInline?: boolean;
 };
 
 /**
@@ -41,6 +43,7 @@ const updateDom = ({
   timeoutMs = 1000,
   onBefore,
   isApplyAll = false,
+  isInline = false,
 }: Params) => {
   /**
    * mountDiv를 만들고 컴포넌트를 렌더하거나, htmlElement를 추가하는 함수
@@ -53,7 +56,7 @@ const updateDom = ({
 
     /* 컴포넌트 or HTML 삽입 */
     if (component) {
-      const mountDiv = document.createElement('div');
+      const mountDiv = document.createElement(isInline ? 'span' : 'div');
       if (key) {
         mountDiv.dataset.updateDomKey = key;
       }

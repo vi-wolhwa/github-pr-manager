@@ -39,15 +39,25 @@ const ReviewStatus = ({ pageName, pullNumber, owner, repo, token, myLogin }: Pro
   return (
     <>
       {isPageName('PULLS') && (
-        <div style={{ display: 'flex', height: '100%', padding: '14px 0 0 12px' }}>
+        <div
+          style={{
+            display: 'flex',
+            position: 'relative',
+            height: '100%',
+            lineHeight: '100%',
+            margin: '14px 0 0 8px',
+            left: '4px',
+          }}>
           <p
             style={{
-              height: '17px',
+              height: '18px',
               margin: '0',
-              padding: '0 5px',
+              padding: '0 4px',
               textWrap: 'nowrap',
+              fontSize: '11px',
+              lineHeight: '140%',
+              border: '1px solid',
               borderRadius: '2em',
-              fontSize: '10px',
               ...PR_REVIEW_STATUS_COLOR[status],
             }}>
             {label}
@@ -55,15 +65,16 @@ const ReviewStatus = ({ pageName, pullNumber, owner, repo, token, myLogin }: Pro
         </div>
       )}
       {isPageName('PROJECT') && (
-        <div style={{ display: 'flex', height: '100%', padding: '0 0 0 12px' }}>
+        <div style={{ display: 'inline-flex', marginRight: '4px' }}>
           <p
             style={{
-              height: '17px',
+              height: '16px',
               margin: '0',
-              padding: '0 5px',
+              padding: '0 4px',
               textWrap: 'nowrap',
+              fontSize: '11px',
+              border: '1px solid',
               borderRadius: '2em',
-              fontSize: '10px',
               ...PR_REVIEW_STATUS_COLOR[status],
             }}>
             {label}

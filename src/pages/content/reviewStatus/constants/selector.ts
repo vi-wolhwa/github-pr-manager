@@ -20,7 +20,7 @@ const SELECTOR = {
     PR_LINK: 'a',
 
     /** PR 행 내부의 "열림/드래프트" 상태 아이콘 영역 */
-    PR_OPEN_STATUS: 'div[class^="header-module__Box_5"]',
+    PR_OPEN_STATUS: 'h3 span.prc-Text-Text-0ima0',
   },
 
   /* ------------------- UserContext( Github 정보 ) --------------------- */

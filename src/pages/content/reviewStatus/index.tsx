@@ -45,7 +45,7 @@ const runPrReviewStatusScript = async () => {
     /* 4-3. 상태 아이콘(<ReviewStatus>) 삽입 */
     updateDom({
       key: `${PAGE}-${owner}-${repo}-${pullNumber}`,
-      action: 'insertAfter',
+      action: isCurrentPage('pulls') ? 'insertAfter' : 'prepend',
       targetSelector: `.${uniqueCls} ${SELECTOR[PAGE].PR_OPEN_STATUS}`,
       component: (
         <ReviewStatus
@@ -57,6 +57,7 @@ const runPrReviewStatusScript = async () => {
           myLogin={myLogin}
         />
       ),
+      isInline: isCurrentPage('project'),
     });
   });
 };

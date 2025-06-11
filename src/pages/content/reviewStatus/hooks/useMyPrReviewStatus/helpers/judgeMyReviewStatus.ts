@@ -15,10 +15,10 @@ const judgeMyReviewStatus = (
   myReviews: Array<{ state: string }>,
 ): PrReviewStatus => {
   if (!requestedReviewers.includes(myLogin) && myReviews.length === 0) {
-    return PR_REVIEW_STATUS.none;
+    return PR_REVIEW_STATUS.NONE;
   }
   if (requestedReviewers.includes(myLogin) && myReviews.length === 0) {
-    return PR_REVIEW_STATUS.need;
+    return PR_REVIEW_STATUS.NEED;
   }
   if (myReviews.length > 0) {
     const lastReview = myReviews[myReviews.length - 1];
@@ -26,7 +26,7 @@ const judgeMyReviewStatus = (
     return getStatusFromReviewState(lastReview.state);
   }
 
-  return PR_REVIEW_STATUS.none;
+  return PR_REVIEW_STATUS.NONE;
 };
 
 export default judgeMyReviewStatus;

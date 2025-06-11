@@ -9,16 +9,16 @@ import { PR_REVIEW_STATUS, PrReviewStatus } from '../types';
 const getStatusFromReviewState = (state: string): PrReviewStatus => {
   switch (state) {
     case 'APPROVED':
-      return PR_REVIEW_STATUS.done;
+      return PR_REVIEW_STATUS.DONE;
     case 'CHANGES_REQUESTED':
-      return PR_REVIEW_STATUS.change;
+      return PR_REVIEW_STATUS.CHANGE;
     case 'COMMENTED':
-      return PR_REVIEW_STATUS.pend;
+      return PR_REVIEW_STATUS.PEND;
     // TODO: DISMISSED / Skip 케이스 상황 고려 @tobi-ouo
     case 'DISMISSED':
-      return PR_REVIEW_STATUS.skip;
+      return PR_REVIEW_STATUS.SKIP;
     default:
-      return PR_REVIEW_STATUS.none;
+      return PR_REVIEW_STATUS.NONE;
   }
 };
 

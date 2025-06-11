@@ -41,17 +41,16 @@ const ReviewStatus = ({ pageName, pullNumber, owner, repo, token, myLogin }: Pro
   /* 2. 상태 → 아이콘 매핑 */
   const icon = (() => {
     switch (status) {
-      case PR_REVIEW_STATUS.need:
+      case PR_REVIEW_STATUS.NEED:
         return <NeedIcon width={ICON_SIZE} height={ICON_SIZE} />;
-      case PR_REVIEW_STATUS.pend:
-      case PR_REVIEW_STATUS.change:
+      case PR_REVIEW_STATUS.PEND:
+      case PR_REVIEW_STATUS.CHANGE:
         return <PendIcon width={ICON_SIZE} height={ICON_SIZE} />;
-      case PR_REVIEW_STATUS.done:
+      case PR_REVIEW_STATUS.DONE:
         return <DoneIcon width={ICON_SIZE} height={ICON_SIZE} />;
-      case PR_REVIEW_STATUS.skip:
-        return <SkipIcon width={ICON_SIZE} height={ICON_SIZE} />;
-      case PR_REVIEW_STATUS.error:
-      case PR_REVIEW_STATUS.none:
+      case PR_REVIEW_STATUS.SKIP:
+      case PR_REVIEW_STATUS.ERROR:
+      case PR_REVIEW_STATUS.NONE:
       default:
         return <div style={{ width: ICON_SIZE, height: ICON_SIZE }} />;
     }

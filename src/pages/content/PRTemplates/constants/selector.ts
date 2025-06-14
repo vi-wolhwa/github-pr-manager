@@ -11,5 +11,5 @@ export const GITHUB_SELECTOR = {
 
 export const CUSTOM_SELECTOR = {
   /** 템플릿 셀렉터 래퍼 */
-  PRTemplateSelectorWrapper: 'pr-template-selector-wrapper',
+  PRTemplateSelectorWrapper: 'x-pr-template-selector-wrapper',
 };

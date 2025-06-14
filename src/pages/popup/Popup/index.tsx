@@ -10,7 +10,7 @@ import userStorage from '@root/src/shared/storages/userStorage';
 import UserCode from './components/UserCode';
 
 import { Button, Heading, Text, Flash, Stack } from '@primer/react';
-import { TABS } from './constants/tabs';
+import { TABS } from './constants';
 import { UnderlinePanels } from '@primer/react/experimental';
 import Home from './containers/Home';
 import PRTemplate from './containers/PRTemplate';
@@ -99,7 +99,7 @@ const Popup = () => {
             반갑습니다, <strong>{userId}</strong>님 👋
           </Heading>
           <Text as="p" sx={{ fontSize: 1, color: 'fg.muted' }}>
-            GitHub 계정이 정상적으로 등록되었습니다. 확장 프로그램의 기능을 자유롭게 활용하실 수 있어요.
+            GitHub 계정이 정상적으로 등록되었습니다. <br /> 확장 프로그램의 기능을 자유롭게 활용하실 수 있어요.
           </Text>
 
           <UnderlinePanels>
@@ -113,10 +113,6 @@ const Popup = () => {
             {/* 제목 자동삽입 */}
             <UnderlinePanels.Panel>
               <PRTitleAutoInsertContainer />
-            </UnderlinePanels.Panel>
-            {/* PR 템플릿 */}
-            <UnderlinePanels.Panel>
-              <PRTemplate />
             </UnderlinePanels.Panel>
             {/* 설정 */}
             <UnderlinePanels.Panel>

@@ -33,13 +33,13 @@ const shouldInitialize = () => {
 /**
  * 템플릿 삽입 UI 렌더링 로직
  */
-const renderTemplateSelector = (templateMap: Map<string, string>, templateNames: string[], hasError: boolean) => {
+const renderTemplateSelector = (templateMap: Map<string, string>, templateNames: string[], isError: boolean) => {
   updateDom({
     action: 'insertBefore',
     targetSelector: GITHUB_SELECTOR.PRInsertTarget,
     component: (
       <div id={CUSTOM_SELECTOR.PRTemplateSelectorWrapper}>
-        {hasError ? (
+        {isError ? (
           <div className="flash flash-error my-3">
             일시적으로 템플릿을 불러오는 데 실패했습니다. 새로고침 후 다시 시도해주세요.
           </div>
@@ -72,8 +72,8 @@ const runPRTemplateScript = async () => {
   if (!access_token) return;
 
   try {
-    const { templateMap, templateNames, hasError } = await fetchPRTemplates(access_token);
-    renderTemplateSelector(templateMap, templateNames, hasError);
+    const { templateMap, templateNames, isError } = await fetchPRTemplates(access_token);
+    renderTemplateSelector(templateMap, templateNames, isError);
   } catch (e) {
     console.error('[runPRTemplateScript] 실행 중 오류', e);
   }

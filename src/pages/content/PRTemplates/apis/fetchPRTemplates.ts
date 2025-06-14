@@ -9,19 +9,19 @@ export type PRTemplatesResult = {
   /** 템플릿 이름 목록 */
   templateNames: string[];
   /** 에러 여부 */
-  hasError: boolean;
+  isError: boolean;
 };
 
 const fetchPRTemplates = async (access_token: string): Promise<PRTemplatesResult> => {
   if (!access_token) {
     console.warn('[fetchPRTemplates] access_token이 없습니다.');
-    return { templateMap: new Map(), templateNames: [], hasError: true };
+    return { templateMap: new Map(), templateNames: [], isError: true };
   }
 
   const repoInfo = getRepoPath();
   if (!repoInfo) {
     console.warn('[fetchPRTemplates] owner/repo 정보를 추출할 수 없습니다.');
-    return { templateMap: new Map(), templateNames: [], hasError: true };
+    return { templateMap: new Map(), templateNames: [], isError: true };
   }
 
   const { owner, repo } = repoInfo;
@@ -38,7 +38,7 @@ const fetchPRTemplates = async (access_token: string): Promise<PRTemplatesResult
       templateNames.push(name);
     }
 
-    return { templateMap, templateNames, hasError: false };
+    return { templateMap, templateNames, isError: false };
   }
 
   const path = '.github/PULL_REQUEST_TEMPLATE';
@@ -52,14 +52,14 @@ const fetchPRTemplates = async (access_token: string): Promise<PRTemplatesResult
 
   if (!res || !res.ok) {
     console.warn('[fetchPRTemplates] 템플릿 경로 fetch 실패');
-    return { templateMap: new Map(), templateNames: [], hasError: true };
+    return { templateMap: new Map(), templateNames: [], isError: true };
   }
 
   const json = await res.json();
 
   if (!Array.isArray(json)) {
     console.warn('[fetchPRTemplates] 템플릿 파일이 배열이 아님');
-    return { templateMap: new Map(), templateNames: [], hasError: true };
+    return { templateMap: new Map(), templateNames: [], isError: true };
   }
 
   const templateMap = new Map<string, string>();
@@ -99,7 +99,7 @@ const fetchPRTemplates = async (access_token: string): Promise<PRTemplatesResult
     await setTemplateStorage(repoPath, Object.fromEntries(templateMap), Infinity);
   }
 
-  return { templateMap, templateNames, hasError: false };
+  return { templateMap, templateNames, isError: false };
 };
 
 export default fetchPRTemplates;

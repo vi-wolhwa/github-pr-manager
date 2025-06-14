@@ -1,4 +1,4 @@
-const SELECTOR = {
+export const GITHUB_SELECTOR = {
   /** PR 본문 textarea (내용 입력) */
   PRBodyTextarea: 'textarea[name="pull_request[body]"]',
 
@@ -9,4 +9,7 @@ const SELECTOR = {
   PRInsertTarget: '.discussion-topic-header',
 };
 
-export default SELECTOR;
+export const CUSTOM_SELECTOR = {
+  /** 템플릿 셀렉터 래퍼 */
+  PRTemplateSelectorWrapper: 'pr-template-selector-wrapper',
+};

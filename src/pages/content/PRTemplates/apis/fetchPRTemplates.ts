@@ -12,15 +12,12 @@ export type PRTemplatesResult = {
   hasError: boolean;
 };
 
-type Props = {
-  access_token: string;
-};
-
 const fetchPRTemplates = async (access_token: string): Promise<PRTemplatesResult> => {
   if (!access_token) {
     console.warn('[fetchPRTemplates] access_token이 없습니다.');
     return { templateMap: new Map(), templateNames: [], hasError: true };
   }
+
   const repoInfo = getRepoPath();
   if (!repoInfo) {
     console.warn('[fetchPRTemplates] owner/repo 정보를 추출할 수 없습니다.');

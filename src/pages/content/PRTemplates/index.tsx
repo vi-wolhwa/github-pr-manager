@@ -4,7 +4,6 @@ import updateDom from '../shared/utils/updateDom';
 import { isCurrentPage } from '../shared/utils/siteUtils';
 import { CUSTOM_SELECTOR, GITHUB_SELECTOR } from './constants/selector';
 import observeForDuplicateWrapper from './utils/observeForDuplicateWrapper';
-import waitForElement from './utils/waitForElement';
 import getAccessToken from '../shared/utils/getAccessToken';
 
 let prevUrl = location.href;
@@ -71,13 +70,6 @@ const runPRTemplateScript = async () => {
 
   const access_token = await getAccessToken();
   if (!access_token) return;
-
-  try {
-    await waitForElement(GITHUB_SELECTOR.PRInsertTarget, 5000);
-  } catch (e) {
-    console.warn('[PRTemplate] 대상 DOM이 등장하지 않음:', e);
-    return;
-  }
 
   try {
     const { templateMap, templateNames, hasError } = await fetchPRTemplates(access_token);

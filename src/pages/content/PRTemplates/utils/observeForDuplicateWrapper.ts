@@ -1,3 +1,5 @@
+import { CUSTOM_SELECTOR } from '../constants/selector';
+
 /**
  * 템플릿 UI가 실제로 DOM에 삽입되었는지 감시하고,
  * 중복으로 삽입된 경우 하나만 남기고 제거
@@ -7,7 +9,7 @@
  */
 const observeForDuplicateWrapper = () => {
   const observer = new MutationObserver(() => {
-    const all = document.querySelectorAll('#pr-template-selector-wrapper');
+    const all = document.querySelectorAll(`#${CUSTOM_SELECTOR.PRTemplateSelectorWrapper}`);
     if (all.length > 1) {
       console.warn('[PRTemplate] 중복 UI 발견 → 하나만 남기고 제거');
       all.forEach((el, i) => {

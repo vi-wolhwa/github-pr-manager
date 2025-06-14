@@ -1,25 +1,27 @@
 import userStorage from '@root/src/shared/storages/userStorage';
 import { getRepoPath } from '../helpers/getRepoPath';
 import { getTemplateStorage, setTemplateStorage } from '../utils/templateStorage';
+import useStorage from '@root/src/shared/hooks/useStorage';
 
 export type PRTemplatesResult = {
   /** 템플릿 이름 ↔ 내용 매핑 */
   templateMap: Map<string, string>;
   /** 템플릿 이름 목록 */
   templateNames: string[];
+  /** 에러 여부 */
+  isError: boolean;
 };
 
-const fetchPRTemplates = async (): Promise<PRTemplatesResult> => {
-  const { access_token } = await userStorage.get();
+const fetchPRTemplates = async (access_token: string): Promise<PRTemplatesResult> => {
   if (!access_token) {
     console.warn('[fetchPRTemplates] access_token이 없습니다.');
-    return { templateMap: new Map(), templateNames: [] };
+    return { templateMap: new Map(), templateNames: [], isError: true };
   }
 
   const repoInfo = getRepoPath();
   if (!repoInfo) {
     console.warn('[fetchPRTemplates] owner/repo 정보를 추출할 수 없습니다.');
-    return { templateMap: new Map(), templateNames: [] };
+    return { templateMap: new Map(), templateNames: [], isError: true };
   }
 
   const { owner, repo } = repoInfo;
@@ -36,10 +38,11 @@ const fetchPRTemplates = async (): Promise<PRTemplatesResult> => {
       templateNames.push(name);
     }
 
-    return { templateMap, templateNames };
+    return { templateMap, templateNames, isError: false };
   }
 
   const path = '.github/PULL_REQUEST_TEMPLATE';
+
   const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
     headers: {
       Authorization: `token ${access_token}`,
@@ -47,11 +50,16 @@ const fetchPRTemplates = async (): Promise<PRTemplatesResult> => {
     },
   });
 
+  if (!res || !res.ok) {
+    console.warn('[fetchPRTemplates] 템플릿 경로 fetch 실패');
+    return { templateMap: new Map(), templateNames: [], isError: true };
+  }
+
   const json = await res.json();
 
   if (!Array.isArray(json)) {
     console.warn('[fetchPRTemplates] 템플릿 파일이 배열이 아님');
-    return { templateMap: new Map(), templateNames: [] };
+    return { templateMap: new Map(), templateNames: [], isError: true };
   }
 
   const templateMap = new Map<string, string>();
@@ -91,7 +99,7 @@ const fetchPRTemplates = async (): Promise<PRTemplatesResult> => {
     await setTemplateStorage(repoPath, Object.fromEntries(templateMap), Infinity);
   }
 
-  return { templateMap, templateNames };
+  return { templateMap, templateNames, isError: false };
 };
 
 export default fetchPRTemplates;

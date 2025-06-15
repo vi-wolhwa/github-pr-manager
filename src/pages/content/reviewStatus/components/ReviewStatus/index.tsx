@@ -33,11 +33,11 @@ const ReviewStatus = ({ pageName, githubVersion, pullNumber, owner, repo, token,
 
   return (
     <>
-      {githubVersion == GITHUB_VERSION.COMMON && (
+      {githubVersion === GITHUB_VERSION.COMMON && (
         <CommonReviewStatus pageName={pageName} status={status} label={label} />
       )}
 
-      {githubVersion == GITHUB_VERSION.ENTERPRISE && (
+      {githubVersion === GITHUB_VERSION.ENTERPRISE && (
         <EnterpriseReviewStatus pageName={pageName} status={status} label={label} />
       )}
     </>

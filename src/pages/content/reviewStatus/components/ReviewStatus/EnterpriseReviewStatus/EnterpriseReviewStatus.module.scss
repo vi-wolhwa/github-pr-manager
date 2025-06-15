@@ -1,0 +1,61 @@
+/* stylelint-disable selector-pseudo-class-no-unknown */
+/* stylelint-disable scss/dollar-variable-pattern */
+/* stylelint-disable keyframes-name-pattern */
+
+/* ----------- 전역 키프레임 ----------- */
+:global {
+  @keyframes __crs_expand_w {
+    from {
+      max-width: 0;
+    }
+
+    to {
+      max-width: 3em;
+    }
+  }
+}
+
+/* ----------- PR/PULL 탭용 컨테이너 ----------- */
+.container_pulls {
+  position: relative;
+  left: 4px;
+  display: flex;
+  max-width: 0;
+  height: 100%;
+  margin: 14px 0 0 8px;
+  overflow: hidden;
+  line-height: 100%;
+  animation: __crs_expand_w 0.5s ease-out forwards;
+}
+
+/* ----------- PR/PULL 탭용 라벨 ----------- */
+.label_pulls {
+  height: 18px;
+  padding: 0 4px;
+  margin: 0;
+  font-size: 11px;
+  line-height: 140%;
+  text-wrap: nowrap;
+  border: 1px solid;
+  border-radius: 2em;
+}
+
+/* ----------- Project 보드용 컨테이너 ----------- */
+.container_project {
+  display: inline-flex;
+  max-width: 0;
+  margin-right: 4px;
+  overflow: hidden;
+  animation: __crs_expand_w 0.5s ease-out forwards;
+}
+
+/* ----------- Project 보드용 라벨 ----------- */
+.label_project {
+  height: 16px;
+  padding: 0 4px;
+  margin: 0;
+  font-size: 11px;
+  text-wrap: nowrap;
+  border: 1px solid;
+  border-radius: 2em;
+}

@@ -1,10 +1,10 @@
 {
   "extensionDescription": {
     "description": "Extension description",
-    "message": "Chrome extension boilerplate developed with Vite, React and Typescript"
+    "message": "안녕! 나는 깃식이야! 나는 무뚝뚝한 감자칩을 좋아해. 깃허브를 더 편하게 쓸 수 있게 도와줄게!"
   },
   "extensionName": {
     "description": "Extension name",
-    "message": "Chrome extension boilerplate"
+    "message": "깃식이"
   }
 }

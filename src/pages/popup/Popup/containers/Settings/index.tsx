@@ -10,29 +10,24 @@ import { clearTemplateStorage } from '@root/src/pages/content/PRTemplates/utils/
 const SettingsContainer = () => {
   const onClickRefreshInfo = async () => {
     const confirmed = confirm(
-      'PR 템플릿 정보를 초기화하고 PR 페이지로 이동할까요?\n(최신 템플릿을 반영하려면 필요합니다)',
+      'PR 템플릿 정보를 초기화하고 GitHub 페이지로 이동할까요?\n(최신 템플릿을 반영하려면 필요합니다.)',
     );
 
     if (!confirmed) return;
 
     await clearTemplateStorage();
 
-    // 현재 탭 PR 생성 주소로 강제 이동
     chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
       if (tabs[0].id) {
-        // 현재 repo 경로만 추출해서 compare 페이지로 이동
         const url = new URL(tabs[0].url || '');
         const match = url.pathname.match(/^\/([^/]+)\/([^/]+)/);
 
-        if (match) {
-          const [_, owner, repo] = match;
-          const compareUrl = `https://github.com/${owner}/${repo}/compare`;
-          chrome.tabs.update(tabs[0].id, { url: compareUrl });
-        }
+        const redirectUrl = match ? `https://github.com/${match[1]}/${match[2]}/compare` : 'https://github.com';
+
+        chrome.tabs.update(tabs[0].id, { url: redirectUrl });
       }
     });
 
-    // 팝업도 함께 새로고침
     location.reload();
   };
 
@@ -59,7 +54,18 @@ const SettingsContainer = () => {
               <Text as="h2" sx={{ fontSize: 1, fontWeight: 'semibold' }}>
                 📄 PR 템플릿 설정
               </Text>
-              <Text sx={{ fontSize: 0, color: 'fg.subtle', mt: 2 }}>레포지토리의 PR 템플릿을 서버와 동기화합니다.</Text>
+              <Text sx={{ fontSize: 0, color: 'fg.subtle', mt: 2 }}>
+                레포지토리의 PR 템플릿을 서버와 동기화합니다. <br />
+                아래 경우에 동기화를 진행해주세요.
+              </Text>
+              <Box as="ul" sx={{ mt: 1, pl: 3, listStyleType: 'disc', 'li::marker': { color: 'fg.subtle' } }}>
+                <Box as="li">
+                  <Text sx={{ fontSize: 0, color: 'fg.subtle' }}>최초로 깃허브 계정을 연동했을 시</Text>
+                </Box>
+                <Box as="li">
+                  <Text sx={{ fontSize: 0, color: 'fg.subtle' }}>레포지토리에 올린 PR 템플릿을 변경한 경우</Text>
+                </Box>
+              </Box>
             </Box>
             <Button size="small" leadingVisual={SyncIcon} sx={{ color: 'fg.default' }} onClick={onClickRefreshInfo}>
               PR 템플릿 동기화

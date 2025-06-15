@@ -16,6 +16,7 @@ import Home from './containers/Home';
 import PRTemplate from './containers/PRTemplate';
 import Settings from './containers/Settings';
 import PRTitleAutoInsertContainer from './containers/PRTitleAutoInsert';
+import PRTemplateContainer from './containers/PRTemplate/index';
 
 const cx = classNames.bind(styles);
 

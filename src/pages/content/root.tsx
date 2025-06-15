@@ -3,9 +3,15 @@
 /* ------------------------------------------------------------------ */
 import runPRTitleAutoInsert from './prTitleAutoInsert';
 import runSampleNaverScript from './sampleNaver';
+import runPRTemplateScript from './PRTemplates';
 import runPREditorAssistant from './addPRButton';
 
-const REGISTERED_SCRIPTS: Array<() => void> = [runSampleNaverScript, runPRTitleAutoInsert, runPREditorAssistant];
+const REGISTERED_SCRIPTS: Array<() => void> = [
+  runSampleNaverScript,
+  runPRTitleAutoInsert,
+  runPRTemplateScript,
+  runPREditorAssistant,
+];
 
 /* ------------------------------------------------------------------ */
 /* IIFE – 모든 실행 로직                                              */

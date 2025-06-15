@@ -1,7 +1,5 @@
-import userStorage from '@root/src/shared/storages/userStorage';
 import { getRepoPath } from '../helpers/getRepoPath';
 import { getTemplateStorage, setTemplateStorage } from '../utils/templateStorage';
-import useStorage from '@root/src/shared/hooks/useStorage';
 
 export type PRTemplatesResult = {
   /** 템플릿 이름 ↔ 내용 매핑 */
@@ -43,54 +41,69 @@ const fetchPRTemplates = async (access_token: string): Promise<PRTemplatesResult
 
   const path = '.github/PULL_REQUEST_TEMPLATE';
 
-  const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+  // [1] 템플릿 목록 조회
+  // GET https://api.github.com/repos/:owner/:repo/contents/.github/PULL_REQUEST_TEMPLATE
+  // 응답 형태: fileList: Array<{
+  //   name: string; // 예: "FE.md"
+  //   path: string;
+  //   type: "file";
+  //   sha: string;
+  //   url: string;
+  //   git_url: string;
+  //   html_url: string;
+  //   download_url: string | null;
+  // }>
+  const listRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
     headers: {
       Authorization: `token ${access_token}`,
       Accept: 'application/vnd.github.v3+json',
     },
   });
 
-  if (!res || !res.ok) {
-    console.warn('[fetchPRTemplates] 템플릿 경로 fetch 실패');
+  if (!listRes.ok) {
+    console.warn('[fetchPRTemplates] 템플릿 목록 fetch 실패', listRes.status);
     return { templateMap: new Map(), templateNames: [], isError: true };
   }
 
-  const json = await res.json();
+  const fileList = await listRes.json();
 
-  if (!Array.isArray(json)) {
-    console.warn('[fetchPRTemplates] 템플릿 파일이 배열이 아님');
+  if (!Array.isArray(fileList)) {
+    console.warn('[fetchPRTemplates] 템플릿 목록이 배열이 아님');
     return { templateMap: new Map(), templateNames: [], isError: true };
   }
 
   const templateMap = new Map<string, string>();
   const templateNames: string[] = [];
 
-  for (const file of json) {
-    /**
-     * file: {
-     *   name: "투자서비스_FEAT.md",         // 템플릿 이름 (확장자 포함)
-     *   download_url: "...",                // 템플릿 원본 내용에 직접 접근할 수 있는 URL
-     *   ... 기타 필드는 사용하지 않음
-     * }
-     */
-    if (!file.name.endsWith('.md')) {
-      continue;
-    }
+  for (const file of fileList) {
+    if (!file.name.endsWith('.md')) continue;
+
+    const filename = file.name;
 
     try {
-      const res = await fetch(file.download_url);
-      if (!res.ok) {
-        console.warn(`[fetchPRTemplates] ${file.name} 응답 실패 (${res.status})`);
+      // [2] 개별 템플릿 본문 가져오기 (raw 텍스트로)
+      // GET https://api.github.com/repos/:owner/:repo/contents/.github/PULL_REQUEST_TEMPLATE/:filename
+      // 헤더 Accept: application/vnd.github.v3.raw
+      // 응답 형태: string (파일 내용만 반환됨)
+      const contentRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}/${filename}`, {
+        headers: {
+          Authorization: `token ${access_token}`,
+          Accept: 'application/vnd.github.v3.raw',
+        },
+      });
+
+      if (!contentRes.ok) {
+        console.warn(`[fetchPRTemplates] ${filename} 본문 fetch 실패 (${contentRes.status})`);
         continue;
       }
 
-      const content = await res.text();
-      const name = file.name.replace(/\.md$/, '');
+      const content = await contentRes.text();
+      const name = filename.replace(/\.md$/, '');
 
       templateMap.set(name, content);
       templateNames.push(name);
     } catch (e) {
-      console.warn(`[fetchPRTemplates] ${file.name} 다운로드 실패`, e);
+      console.warn(`[fetchPRTemplates] ${filename} 본문 fetch 중 예외 발생`, e);
     }
   }
 

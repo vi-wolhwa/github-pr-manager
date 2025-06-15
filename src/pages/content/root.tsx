@@ -1,16 +1,18 @@
 /* ------------------------------------------------------------------ */
 /* 실행할 스크립트를 배열에만 추가                                    */
 /* ------------------------------------------------------------------ */
-import runPRTitleAutoInsert from './prTitleAutoInsert';
+import runPrReviewStatusScript from './reviewStatus';
 import runSampleNaverScript from './sampleNaver';
 import runPRTemplateScript from './PRTemplates';
 import runPREditorAssistant from './addPRButton';
+import runPRTitleAutoInsert from './prTitleAutoInsert';
 
 const REGISTERED_SCRIPTS: Array<() => void> = [
   runSampleNaverScript,
   runPRTitleAutoInsert,
   runPRTemplateScript,
   runPREditorAssistant,
+  runPrReviewStatusScript,
 ];
 
 /* ------------------------------------------------------------------ */

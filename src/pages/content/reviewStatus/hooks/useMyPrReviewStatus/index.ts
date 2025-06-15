@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
 import { getRequestedReviewers } from '../../apis/getRequestedReviewers';
 import { getReviews } from '../../apis/getReviews';
+import { getPullRequest } from '../../apis/getPullRequest';
 import { PR_REVIEW_STATUS, UseMyPrReviewStatusParams, UseMyPrReviewStatusReturn, PrReviewStatus } from './types';
 import judgeMyReviewStatus from './helpers/judgeMyReviewStatus';
 
 /**
- * 지정한 PR에 대해 내 리뷰 상태를 반환하는 커스텀 훅
- * - API를 통해 리뷰 요청자/기록을 조회하여 내 상태를 판별
- * - NONE/NEED/PEND/DONE/CHANGE/SKIP/ERROR 중 하나를 반환
- * - 로딩 및 에러 상태도 함께 반환
+ * 지정 PR 에 대해 “내 리뷰 상태”를 반환하는 훅
  *
- * @param params PR 정보(owner, repo, pullNumber, token, myLogin)
- * @returns 내 리뷰 상태(status)와 에러(error)
+ * 1. PR 작성자가 **나**면 => PR_REVIEW_STATUS.MY
+ * 2. 아니라면
+ *    - 리뷰 요청자/기록을 조회해 NEED / PEND / DONE / CHANGE / SKIP 판단
+ * 3. API 오류 시 ERROR
  */
 export const useMyPrReviewStatus = ({
   owner,
@@ -20,39 +20,42 @@ export const useMyPrReviewStatus = ({
   token,
   myLogin,
 }: UseMyPrReviewStatusParams): UseMyPrReviewStatusReturn => {
-  /* 리뷰 상태 */
+  /* 상태 & 에러 */
   const [status, setStatus] = useState<PrReviewStatus>(PR_REVIEW_STATUS.NONE);
-  /* 에러 상태 */
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     let cancelled = false;
-    /* 상태 초기화 */
     setStatus(PR_REVIEW_STATUS.NONE);
     setError(null);
 
-    /* 비동기로 리뷰 상태 조회 */
     const fetchStatus = async () => {
       try {
-        /* 1. 리뷰 요청자/리뷰 기록 동시 조회 */
-        const [reviewersRes, reviewsRes] = await Promise.all([
-          getRequestedReviewers({ owner, repo, pullNumber, token }),
-          getReviews({ owner, repo, pullNumber, token }),
+        /* 1) PR 상세(작성자)·리뷰 요청자·리뷰 기록을 병렬로 조회 */
+        const [prDetail, reviewersRes, reviewsRes] = await Promise.all([
+          getPullRequest({ owner, repo, pullNumber, token }), // user.login
+          getRequestedReviewers({ owner, repo, pullNumber, token }), // users[ ]
+          getReviews({ owner, repo, pullNumber, token }), // reviews[ ]
         ]);
 
-        /* 2. 언마운트된 경우 무시 */
         if (cancelled) {
           return;
         }
 
-        /* 3. 내 아이디와 비교하여 상태 판별 */
-        const requestedReviewerLogins = reviewersRes.users.map(u => u.login);
+        /* 2) 내가 PR 작성자이면 최우선 상태 = MY */
+        if (prDetail.user.login === myLogin) {
+          setStatus(PR_REVIEW_STATUS.MY);
+
+          return;
+        }
+
+        /* 3) 리뷰어 상태 판별 */
+        const requested = reviewersRes.users.map(u => u.login);
         const myReviews = reviewsRes.filter(r => r.user.login === myLogin);
 
-        const result = judgeMyReviewStatus(myLogin, requestedReviewerLogins, myReviews);
+        const result = judgeMyReviewStatus(myLogin, requested, myReviews);
         setStatus(result);
       } catch (e) {
-        /* 4. 에러 처리 */
         if (!cancelled) {
           setError(e as Error);
           setStatus(PR_REVIEW_STATUS.ERROR);
@@ -62,7 +65,6 @@ export const useMyPrReviewStatus = ({
 
     fetchStatus();
 
-    /* 5. 언마운트 시 플래그 변경 */
     return () => {
       cancelled = true;
     };

@@ -13,7 +13,7 @@ export type UseMyPrReviewStatusParams = {
 };
 
 /** PR 리뷰 상태 타입 */
-export type PrReviewStatus = 'NONE' | 'NEED' | 'PEND' | 'DONE' | 'CHANGE' | 'SKIP' | 'ERROR';
+export type PrReviewStatus = 'MY' | 'NONE' | 'NEED' | 'PEND' | 'DONE' | 'CHANGE' | 'SKIP' | 'ERROR';
 
 /** PR 리뷰 상태 조회 커스텀 훅 리턴 타입 */
 export type UseMyPrReviewStatusReturn = {
@@ -25,6 +25,7 @@ export type UseMyPrReviewStatusReturn = {
 
 /** PR 리뷰 상태 상수 */
 export const PR_REVIEW_STATUS: Record<PrReviewStatus, PrReviewStatus> = {
+  MY: 'MY', // 내 PR
   NONE: 'NONE', // 리뷰 요청 없음
   NEED: 'NEED', // 리뷰 요청 받았지만 아직 리뷰 안 함
   PEND: 'PEND', // 리뷰 중 (코멘트만 남김)

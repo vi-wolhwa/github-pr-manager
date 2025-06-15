@@ -1,64 +1,66 @@
-import { isCurrentPage } from '../shared/utils/siteUtils';
 import updateDom from '../shared/utils/updateDom';
 import ReviewStatus from './components/ReviewStatus/index';
-import SELECTOR from './constants/selector';
-import { getUserContext } from './utils/getUserContext';
+import { PR_SELECTOR } from './constants/selector';
 import { getPrContext } from './utils/getPrContextFromHref';
+import { observeElements } from '../shared/utils/observeElements';
+import getCurrentPage from './utils/getCurrentPage';
+import { getUserContextOrThrow } from './utils/getUserContextOrThrow';
+import { PAGE_NAME } from './constants/githubEnvironment';
+import { getGitHubVersion } from './utils/getGithubVersion';
 
 /**
- * PR 목록에서 각 PR별 리뷰 상태 아이콘을 렌더링하는 스크립트
- * - 페이지 판별 → pulls / project 에서만 동작
- * - PR 링크를 통해 owner / repo / pullNumber 추출
- * - updateDom 유틸로 상태 아이콘을 DOM 에 삽입
+ * Pulls, Project 페이지에서 PR-별 리뷰 상태 아이콘 삽입
  */
 const runPrReviewStatusScript = async () => {
-  /* 1. 지원하지 않는 페이지라면 종료 */
-  if (!isCurrentPage('pulls') && !isCurrentPage('project')) {
+  const pageName = getCurrentPage();
+  if (!pageName) {
     return;
   }
 
-  /* 2. 사용자 토큰 / 로그인 정보 획득 */
-  const { myLogin, token } = await getUserContext();
+  const { githubVersion } = getGitHubVersion();
+  const { myLogin, token } = await getUserContextOrThrow();
 
-  if (!(myLogin && token)) {
-    return;
-  }
+  const ROOT_SEL = PR_SELECTOR.PR_ITEMS_ROOT[pageName].COMMON;
+  const ITEM_SEL = PR_SELECTOR.PR_ITEM[pageName].COMMON;
+  const TITLE_SEL = PR_SELECTOR.PR_TITLE[pageName].COMMON;
+  const STATUS_SEL = PR_SELECTOR.PR_STATUS_INSERT_SPOT[pageName].COMMON;
 
-  /* 3. 현재 페이지 유형(pulls | project) */
-  const PAGE = isCurrentPage('pulls') ? 'PULLS' : 'PROJECT';
+  const UPDATE_DOM_ACTION = pageName === PAGE_NAME.PULLS ? 'insertAfter' : 'prepend';
+  const UPDATE_DOM_IS_INLINE = pageName === PAGE_NAME.PULLS ? false : true;
 
-  /* 4. PR 아이템 순회 */
-  document.querySelectorAll(SELECTOR[PAGE].PR_ITEM).forEach((item, idx) => {
-    /* 4-1. 유니크 임시 클래스 부여 */
-    const uniqueCls = `__reviewstatus-pritem-${idx}`;
-    item.classList.add(uniqueCls);
+  /* PR 카드가 지연 렌더링 되더라도 꾸준히 감시 */
+  observeElements({
+    rootSelector: ROOT_SEL,
+    targetSelector: ITEM_SEL,
+    onFound: (item, idx) => {
+      const uniqueCls = `__reviewstatus-pritem-${idx}`;
+      item.classList.add(uniqueCls);
 
-    /* 4-2. PR 링크에서 owner / repo / pullNumber 추출 */
-    const $link = item.querySelector(SELECTOR[PAGE].PR_LINK);
-    const href = $link?.getAttribute('href') || '';
-    const { owner, repo, pullNumber } = getPrContext(href);
+      const $link = item.querySelector(TITLE_SEL);
+      const href = $link?.getAttribute('href') || '';
+      const { owner, repo, pullNumber } = getPrContext(href);
+      if (!(owner && repo && pullNumber)) {
+        return;
+      }
 
-    if (!(owner && repo && pullNumber)) {
-      return;
-    }
-
-    /* 4-3. 상태 아이콘(<ReviewStatus>) 삽입 */
-    updateDom({
-      key: `${PAGE}-${owner}-${repo}-${pullNumber}`,
-      action: isCurrentPage('pulls') ? 'insertAfter' : 'prepend',
-      targetSelector: `.${uniqueCls} ${SELECTOR[PAGE].PR_OPEN_STATUS}`,
-      component: (
-        <ReviewStatus
-          pageName={PAGE}
-          pullNumber={Number(pullNumber)}
-          owner={owner}
-          repo={repo}
-          token={token}
-          myLogin={myLogin}
-        />
-      ),
-      isInline: isCurrentPage('project'),
-    });
+      updateDom({
+        key: `${pageName}-${owner}-${repo}-${pullNumber}`,
+        action: UPDATE_DOM_ACTION,
+        targetSelector: `.${uniqueCls} ${STATUS_SEL}`,
+        component: (
+          <ReviewStatus
+            pageName={pageName}
+            githubVersion={githubVersion}
+            pullNumber={Number(pullNumber)}
+            owner={owner}
+            repo={repo}
+            token={token}
+            myLogin={myLogin}
+          />
+        ),
+        isInline: UPDATE_DOM_IS_INLINE,
+      });
+    },
   });
 };
 

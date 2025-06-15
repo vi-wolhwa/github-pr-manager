@@ -102,8 +102,10 @@ const updateDom = ({ action, targetSelector, component, htmlElement, timeoutMs =
   const observer = new MutationObserver(() => mutate(observer));
   observer.observe(document.body, { childList: true, subtree: true });
 
+  /** 이미 존재하면 한 번 시도 */
+  mutate(observer);
+
   /* 최대 timeoutMs 후 감시 강제 종료(메모리 보호) */
   setTimeout(() => observer.disconnect(), timeoutMs);
 };
-
 export default updateDom;
